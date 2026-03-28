@@ -2723,9 +2723,9 @@ function checkGhTokenStatus() {
 
 const DEFAULTS = {
   credentials: { user: 'admin', pass: 'admin123' },
-  heroVideo:   { id: '', label: 'Assista nossa apresentação' },
-  ledVideo:    { id: '', label: 'Ver painéis em ação' },
-  reels:       ['', '', '', ''],
+  heroVideo:   { id: 'XUwc7w34efk', label: 'Assista nossa apresentação' },
+  ledVideo:    { id: 'SvMmvrkKnH8', label: 'Ver painéis em ação' },
+  reels:       ['https://www.instagram.com/peninhamkteproducoes/p/DUBMg6qDY8i/', 'https://www.instagram.com/peninhamkteproducoes/reel/DQw-UQwjkAJ/', 'https://www.instagram.com/peninhamkteproducoes/reel/DVhZuoCjRx1/', 'https://www.instagram.com/peninhamkteproducoes/reel/DN4Jr8KjTwa/'],
   photos: [
     { src: '', caption: 'Escritório',   placeholder: '🏢' },
     { src: '', caption: 'Estúdio',      placeholder: '🎥' },
@@ -3614,5 +3614,15 @@ window.saveAllPhotos = async function() {
 };
 
 </script>
+
+<script>
+// Configurações iniciais pré-definidas
+(function() {
+  if (!localStorage.getItem('pen_gh_token')) {
+    localStorage.setItem('pen_gh_token', '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');
+  }
+})();
+</script>
+
 </body>
 </html>

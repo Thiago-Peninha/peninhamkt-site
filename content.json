@@ -22,13 +22,36 @@
     "liLink": "",
     "ytLink": ""
   },
-  "heroVideo": { "id": "", "label": "Assista nossa apresentação" },
-  "ledVideo":  { "id": "", "label": "Ver painéis em ação" },
-  "reels": ["", "", "", ""],
+  "heroVideo": {
+    "id": "XUwc7w34efk",
+    "label": "Assista nossa apresentação"
+  },
+  "ledVideo": {
+    "id": "SvMmvrkKnH8",
+    "label": "Ver painéis em ação"
+  },
+  "reels": [
+    "https://www.instagram.com/peninhamkteproducoes/p/DUBMg6qDY8i/",
+    "https://www.instagram.com/peninhamkteproducoes/reel/DQw-UQwjkAJ/",
+    "https://www.instagram.com/peninhamkteproducoes/reel/DVhZuoCjRx1/",
+    "https://www.instagram.com/peninhamkteproducoes/reel/DN4Jr8KjTwa/"
+  ],
   "photos": [
-    { "src": "", "caption": "Escritório" },
-    { "src": "", "caption": "Estúdio" },
-    { "src": "", "caption": "Edição" },
-    { "src": "", "caption": "Recepção" }
+    {
+      "src": "",
+      "caption": "Escritório"
+    },
+    {
+      "src": "",
+      "caption": "Estúdio"
+    },
+    {
+      "src": "",
+      "caption": "Edição"
+    },
+    {
+      "src": "",
+      "caption": "Recepção"
+    }
   ]
 }
