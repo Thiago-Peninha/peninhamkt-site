@@ -1,0 +1,34 @@
+{
+  "content": {
+    "heroTitle": "TRANSFORMAMOS",
+    "heroOrange": "SUA VISÃO",
+    "heroSubtitle": "Somos uma produtora completa com mais de 20 profissionais dedicados a impulsionar suas vendas com estratégia, criatividade e tecnologia.",
+    "aboutP1": "A Peninha Produções e Marketing é uma produtora dedicada a oferecer o melhor para você, nosso cliente! Com nossa expertise abrangente, oferecemos desde planejamento estratégico, criação de artes e vídeos até gestão de tráfego pago — tudo essencial para impulsionar suas vendas.",
+    "aboutP2": "Nossa equipe é composta por mais de 20 profissionais dedicados, prontos para oferecer um atendimento diferenciado e totalmente personalizado.",
+    "aboutP3": "Venha descobrir como podemos ajudar a transformar sua visão em realidade! Conheça nossa proposta e junte-se a nós na jornada para o sucesso.",
+    "svc1": "Gerenciamento profissional completo da sua presença online. Estratégia, conteúdo e performance para gerar resultados reais.",
+    "svc2": "Da concepção à entrega — produzimos vídeos institucionais, comerciais, reels e conteúdo audiovisual de alto impacto para sua marca.",
+    "svc3": "Gestão estratégica de anúncios para atrair leads qualificados e aumentar seus agendamentos e vendas continuamente.",
+    "svc4": "Anuncie em painéis de LED estratégicos em Volta Redonda, fortalecendo seu branding e alcançando mais de 170 mil pessoas por dia.",
+    "ledDesc": "",
+    "phone": "",
+    "phoneDisplay": "",
+    "ig": "",
+    "contactDesc": "Estamos prontos para iniciar imediatamente. Preencha o formulário e retornaremos o mais breve possível para planejarmos os conteúdos e campanhas da sua empresa.",
+    "obrigadoTitle": "ENVIADA!",
+    "obrigadoSub": "Recebemos seu contato e em breve um de nossos especialistas vai entrar em contato com você.\n\nFique de olho no seu WhatsApp e e-mail!",
+    "fbLink": "",
+    "igLink": "",
+    "liLink": "",
+    "ytLink": ""
+  },
+  "heroVideo": { "id": "", "label": "Assista nossa apresentação" },
+  "ledVideo":  { "id": "", "label": "Ver painéis em ação" },
+  "reels": ["", "", "", ""],
+  "photos": [
+    { "src": "", "caption": "Escritório" },
+    { "src": "", "caption": "Estúdio" },
+    { "src": "", "caption": "Edição" },
+    { "src": "", "caption": "Recepção" }
+  ]
+}
