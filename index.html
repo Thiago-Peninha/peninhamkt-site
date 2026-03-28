@@ -562,6 +562,7 @@ src="https://www.facebook.com/tr?id=906561028810787&ev=PageView&noscript=1"
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 12px;
+    align-items: start;
   }
 
   .reel-item {
@@ -574,6 +575,14 @@ src="https://www.facebook.com/tr?id=906561028810787&ev=PageView&noscript=1"
     align-items: flex-start;
     justify-content: center;
     min-height: 420px;
+  }
+
+  .reel-item blockquote.instagram-media {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    flex: 1;
   }
 
   .reel-item .ig-embed-wrap {
@@ -2895,67 +2904,62 @@ function renderReels(reels) {
   var grid = document.getElementById('reels-grid');
   if (!grid) return;
   var list = Array.isArray(reels) && reels.length ? reels : ['', '', '', ''];
+
+  // Filtra só URLs válidas
+  var validUrls = list.filter(function(u) { return u && u.trim(); });
+
   grid.innerHTML = '';
 
-  list.forEach(function(url, i) {
-    var el = document.createElement('div');
-    el.className = 'reel-item';
+  if (validUrls.length === 0) {
+    grid.innerHTML =
+      '<div style="grid-column:1/-1;display:flex;align-items:center;justify-content:center;' +
+      'height:200px;color:var(--gray);font-size:13px;letter-spacing:2px;text-transform:uppercase">' +
+      '📷 Configure os posts no painel Admin</div>';
+    return;
+  }
 
-    if (url && url.trim()) {
-      // Mostra loading enquanto carrega
-      el.innerHTML = '<div class="reel-placeholder"><div class="ig-icon" style="animation:pulse 1.5s infinite">📸</div><p>Carregando...</p></div>';
+  validUrls.forEach(function(url) {
+    var cleanUrl = url.trim().endsWith('/') ? url.trim() : url.trim() + '/';
 
-      // Usa oEmbed do Instagram para obter o HTML oficial de embed
-      var oEmbedUrl = 'https://graph.facebook.com/v18.0/instagram_oembed?url=' + encodeURIComponent(url.trim()) + '&maxwidth=320&fields=html,thumbnail_url,media_type&access_token=906561028810787|' + encodeURIComponent('dkCb8I4HYALUzs3aZ5gZuH6F8Ic');
+    var wrap = document.createElement('div');
+    wrap.className = 'reel-item';
 
-      fetch(oEmbedUrl)
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-          if (data && data.html) {
-            // oEmbed retornou HTML válido — exibe o embed oficial
-            el.innerHTML = '<div class="ig-embed-wrap">' + data.html + '</div>';
-            // Aciona o script de embed do Instagram se ainda não foi carregado
-            if (window.instgrm) {
-              window.instgrm.Embeds.process();
-            } else if (!document.getElementById('ig-embed-script')) {
-              var s = document.createElement('script');
-              s.id = 'ig-embed-script';
-              s.src = 'https://www.instagram.com/embed.js';
-              s.async = true;
-              s.onload = function() {
-                if (window.instgrm) window.instgrm.Embeds.process();
-              };
-              document.body.appendChild(s);
-            }
-          } else {
-            // Fallback: miniatura + link
-            igFallback(el, url, i);
-          }
-        })
-        .catch(function() {
-          igFallback(el, url, i);
-        });
-    } else {
-      el.innerHTML = '<div class="reel-placeholder"><div class="ig-icon">📷</div><p>Post ' + (i+1) + '<br><span style="color:#555;font-size:9px">Configure no Admin</span></p></div>';
-    }
+    // Padrão que funciona: blockquote com data-instgrm-permalink direto
+    var bq = document.createElement('blockquote');
+    bq.className = 'instagram-media';
+    bq.setAttribute('data-instgrm-permalink', cleanUrl);
+    bq.setAttribute('data-instgrm-version', '14');
+    bq.setAttribute('data-instgrm-captioned', '');
+    bq.style.cssText = 'width:100%;min-width:0;max-width:100%;margin:0;background:#fff;border:0;border-radius:3px;box-shadow:none;padding:0;';
 
-    grid.appendChild(el);
+    // Conteúdo de fallback dentro do blockquote (antes do embed.js processar)
+    bq.innerHTML =
+      '<div style="padding:16px;text-align:center;">' +
+        '<a href="' + cleanUrl + '" target="_blank" rel="noopener" ' +
+           'style="color:#C13584;font-size:13px;font-weight:600;text-decoration:none;">' +
+          'Ver no Instagram ↗' +
+        '</a>' +
+      '</div>';
+
+    wrap.appendChild(bq);
+    grid.appendChild(wrap);
   });
 
-  if (window.lucide) lucide.createIcons();
-}
+  // Chave do funcionamento: processa os embeds após inserir os blockquotes
+  if (window.instgrm) {
+    window.instgrm.Embeds.process();
+  } else {
+    // Carrega o embed.js do Instagram uma única vez
+    if (!document.getElementById('ig-embed-script')) {
+      var s = document.createElement('script');
+      s.id = 'ig-embed-script';
+      s.src = 'https://www.instagram.com/embed.js';
+      s.async = true;
+      document.body.appendChild(s);
+    }
+  }
 
-function igFallback(el, url, i) {
-  // Fallback elegante: ícone + botão para abrir no Instagram
-  el.innerHTML =
-    '<div class="reel-placeholder" style="gap:14px">' +
-      '<div style="font-size:40px">📸</div>' +
-      '<p style="font-size:11px;letter-spacing:1px">Post ' + (i+1) + '</p>' +
-      '<a href="' + url + '" target="_blank" rel="noopener" ' +
-        'style="background:var(--orange);color:#000;padding:8px 18px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-decoration:none;border-radius:2px;margin-top:4px">' +
-        'Ver no Instagram ↗' +
-      '</a>' +
-    '</div>';
+  if (window.lucide) lucide.createIcons();
 }
 
 // ============================================================
