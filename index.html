@@ -565,13 +565,29 @@ src="https://www.facebook.com/tr?id=906561028810787&ev=PageView&noscript=1"
   }
 
   .reel-item {
-    aspect-ratio: 9/16;
     background: var(--black3);
     border: 1px solid rgba(255,85,0,0.15);
     overflow: hidden;
     position: relative;
     cursor: pointer;
-    max-height: 320px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    min-height: 420px;
+  }
+
+  .reel-item .ig-embed-wrap {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .reel-item .ig-embed-wrap blockquote {
+    margin: 0 !important;
+    width: 100% !important;
+    min-width: unset !important;
+    max-width: 100% !important;
   }
 
   .reel-item iframe {
@@ -2747,10 +2763,10 @@ const DEFAULTS = {
     phone: '', phoneDisplay: '', ig: '',
     contactDesc: 'Estamos prontos para iniciar imediatamente. Preencha o formulário e retornaremos o mais breve possível para planejarmos os conteúdos e campanhas da sua empresa.',
     obrigadoTitle: 'ENVIADA!',
-    fbLink: '',
-    igLink: '',
-    liLink: '',
-    ytLink: '',
+    fbLink: 'https://www.facebook.com/peninhaproducoes',
+    igLink: 'https://www.instagram.com/peninhamkteproducoes',
+    liLink: 'https://www.linkedin.com',
+    ytLink: 'https://www.youtube.com/@PeninhaProdu%C3%A7%C3%B5eseMKT',
     obrigadoSub: 'Recebemos seu contato e em breve um de nossos especialistas vai entrar em contato com você.\n\nFique de olho no seu WhatsApp e e-mail!',
   }
 };
@@ -2876,25 +2892,70 @@ function applyVideo(v, which) {
 //  REELS / INSTAGRAM
 // ============================================================
 function renderReels(reels) {
-  const grid = document.getElementById('reels-grid');
+  var grid = document.getElementById('reels-grid');
   if (!grid) return;
-  const list = Array.isArray(reels) && reels.length ? reels : ['', '', ''];
+  var list = Array.isArray(reels) && reels.length ? reels : ['', '', '', ''];
   grid.innerHTML = '';
+
   list.forEach(function(url, i) {
     var el = document.createElement('div');
     el.className = 'reel-item';
-    if (url) {
-      el.style.cursor = 'pointer';
-      el.innerHTML = '<div class="reel-placeholder"><div class="ig-icon">📸</div><p>Post ' + (i+1) + '</p><p style="margin-top:6px;font-size:9px;color:#555">Clique para abrir no Instagram</p></div><div style="position:absolute;inset:0;background:rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .3s;font-size:28px" class="rov">▶</div>';
-      el.onmouseenter = function() { el.querySelector('.rov').style.opacity = '1'; };
-      el.onmouseleave = function() { el.querySelector('.rov').style.opacity = '0'; };
-      el.onclick = function() { window.open(url, '_blank'); };
+
+    if (url && url.trim()) {
+      // Mostra loading enquanto carrega
+      el.innerHTML = '<div class="reel-placeholder"><div class="ig-icon" style="animation:pulse 1.5s infinite">📸</div><p>Carregando...</p></div>';
+
+      // Usa oEmbed do Instagram para obter o HTML oficial de embed
+      var oEmbedUrl = 'https://graph.facebook.com/v18.0/instagram_oembed?url=' + encodeURIComponent(url.trim()) + '&maxwidth=320&fields=html,thumbnail_url,media_type&access_token=906561028810787|' + encodeURIComponent('dkCb8I4HYALUzs3aZ5gZuH6F8Ic');
+
+      fetch(oEmbedUrl)
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (data && data.html) {
+            // oEmbed retornou HTML válido — exibe o embed oficial
+            el.innerHTML = '<div class="ig-embed-wrap">' + data.html + '</div>';
+            // Aciona o script de embed do Instagram se ainda não foi carregado
+            if (window.instgrm) {
+              window.instgrm.Embeds.process();
+            } else if (!document.getElementById('ig-embed-script')) {
+              var s = document.createElement('script');
+              s.id = 'ig-embed-script';
+              s.src = 'https://www.instagram.com/embed.js';
+              s.async = true;
+              s.onload = function() {
+                if (window.instgrm) window.instgrm.Embeds.process();
+              };
+              document.body.appendChild(s);
+            }
+          } else {
+            // Fallback: miniatura + link
+            igFallback(el, url, i);
+          }
+        })
+        .catch(function() {
+          igFallback(el, url, i);
+        });
     } else {
       el.innerHTML = '<div class="reel-placeholder"><div class="ig-icon">📷</div><p>Post ' + (i+1) + '<br><span style="color:#555;font-size:9px">Configure no Admin</span></p></div>';
     }
+
     grid.appendChild(el);
   });
+
   if (window.lucide) lucide.createIcons();
+}
+
+function igFallback(el, url, i) {
+  // Fallback elegante: ícone + botão para abrir no Instagram
+  el.innerHTML =
+    '<div class="reel-placeholder" style="gap:14px">' +
+      '<div style="font-size:40px">📸</div>' +
+      '<p style="font-size:11px;letter-spacing:1px">Post ' + (i+1) + '</p>' +
+      '<a href="' + url + '" target="_blank" rel="noopener" ' +
+        'style="background:var(--orange);color:#000;padding:8px 18px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-decoration:none;border-radius:2px;margin-top:4px">' +
+        'Ver no Instagram ↗' +
+      '</a>' +
+    '</div>';
 }
 
 // ============================================================
