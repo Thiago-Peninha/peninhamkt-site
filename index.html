@@ -1888,6 +1888,8 @@ src="https://www.facebook.com/tr?id=906561028810787&ev=PageView&noscript=1"
   }
 
 </style>
+<!-- Instagram embed.js carregado diretamente no HTML — independente de qualquer JS -->
+<script async src="https://www.instagram.com/embed.js"></script>
 </head>
 <body>
 <!-- Google Tag Manager (noscript) -->
@@ -2796,38 +2798,65 @@ function setGhData(k, v) {
 }
 
 // ============================================================
+//  PROTEÇÃO GLOBAL — captura erros sem quebrar a página
+// ============================================================
+window.addEventListener('error', function(e) {
+  console.error('Erro global capturado:', e.message, e.filename, e.lineno);
+});
+window.addEventListener('unhandledrejection', function(e) {
+  console.error('Promise rejeitada não tratada:', e.reason);
+});
+
+// ============================================================
 //  INIT — carrega do GitHub; fallback para localStorage
 // ============================================================
 document.addEventListener('DOMContentLoaded', async () => {
   // Mostra loading indicator sutil
   var loadEl = document.getElementById('gh-load-status');
 
-  // Tenta carregar do GitHub
-  var remote = await ghLoad();
-  if (remote) {
-    _ghData = remote;
-    // Sincroniza localStorage como cache local
-    ['content','heroVideo','ledVideo','reels','photos'].forEach(function(k) {
-      if (remote[k]) lsSet(k, remote[k]);
-    });
-    if (loadEl) { loadEl.textContent = ''; loadEl.style.display = 'none'; }
-  } else {
-    // Fallback: usa localStorage (dados locais antigos)
-    _ghData = {};
-    ['content','heroVideo','ledVideo','reels','photos'].forEach(function(k) {
-      var cached = lsGet(k);
-      if (cached) _ghData[k] = cached;
-    });
-    if (loadEl) { loadEl.textContent = ''; loadEl.style.display = 'none'; }
+  try {
+    // Tenta carregar do GitHub
+    var remote = await ghLoad();
+    if (remote) {
+      _ghData = remote;
+      // Sincroniza localStorage como cache local
+      ['content','heroVideo','ledVideo','reels','photos'].forEach(function(k) {
+        if (remote[k]) lsSet(k, remote[k]);
+      });
+      if (loadEl) { loadEl.textContent = ''; loadEl.style.display = 'none'; }
+    } else {
+      // Fallback: usa localStorage (dados locais antigos)
+      _ghData = {};
+      ['content','heroVideo','ledVideo','reels','photos'].forEach(function(k) {
+        var cached = lsGet(k);
+        if (cached) _ghData[k] = cached;
+      });
+      if (loadEl) { loadEl.textContent = ''; loadEl.style.display = 'none'; }
+    }
+  } catch(initErr) {
+    console.error('Erro no carregamento inicial — usando defaults:', initErr);
+    _ghData = _ghData || {};
+    if (loadEl) { loadEl.style.display = 'none'; }
   }
 
-  applyContent(getGhData('content'));
-  renderAgencyPhotos(getGhData('photos'));
-  applyVideo(getGhData('heroVideo'), 'hero');
-  applyVideo(getGhData('ledVideo'),  'led');
-  renderReels(getGhData('reels'));
-  renderPageStats(null, null);
-  document.getElementById('date-to').value = new Date().toISOString().split('T')[0];
+  try { applyContent(getGhData('content')); } catch(e) { console.error('applyContent:', e); }
+  try { renderAgencyPhotos(getGhData('photos')); } catch(e) { console.error('renderAgencyPhotos:', e); }
+  try { applyVideo(getGhData('heroVideo'), 'hero'); } catch(e) { console.error('applyVideo hero:', e); }
+  try { applyVideo(getGhData('ledVideo'), 'led'); } catch(e) { console.error('applyVideo led:', e); }
+
+  // Reels renderizados de forma independente — nunca bloqueia o restante
+  try {
+    renderReels(getGhData('reels'));
+  } catch(e) {
+    console.error('renderReels falhou no init — tentando recuperar:', e);
+    try { renderReels([]); } catch(e2) { console.error('renderReels recovery falhou:', e2); }
+  }
+
+  try { renderPageStats(null, null); } catch(e) { console.error('renderPageStats:', e); }
+  try {
+    var dateEl = document.getElementById('date-to');
+    if (dateEl) dateEl.value = new Date().toISOString().split('T')[0];
+  } catch(e) { console.error('date-to:', e); }
 });
 
 // ============================================================
@@ -2901,65 +2930,86 @@ function applyVideo(v, which) {
 //  REELS / INSTAGRAM
 // ============================================================
 function renderReels(reels) {
+  // Fix 6: Valida o elemento do DOM antes de qualquer coisa
   var grid = document.getElementById('reels-grid');
-  if (!grid) return;
-  var list = Array.isArray(reels) && reels.length ? reels : ['', '', '', ''];
-
-  // Filtra só URLs válidas
-  var validUrls = list.filter(function(u) { return u && u.trim(); });
-
-  grid.innerHTML = '';
-
-  if (validUrls.length === 0) {
-    grid.innerHTML =
-      '<div style="grid-column:1/-1;display:flex;align-items:center;justify-content:center;' +
-      'height:200px;color:var(--gray);font-size:13px;letter-spacing:2px;text-transform:uppercase">' +
-      '📷 Configure os posts no painel Admin</div>';
+  if (!grid) {
+    console.warn('renderReels: elemento #reels-grid não encontrado');
     return;
   }
 
-  validUrls.forEach(function(url) {
-    var cleanUrl = url.trim().endsWith('/') ? url.trim() : url.trim() + '/';
+  // Fix 2: Toda a função envolvida em try/catch
+  try {
+    var list = Array.isArray(reels) && reels.length ? reels : [];
 
-    var wrap = document.createElement('div');
-    wrap.className = 'reel-item';
+    // Filtra só URLs válidas
+    var validUrls = list.filter(function(u) { return u && typeof u === 'string' && u.trim(); });
 
-    // Padrão que funciona: blockquote com data-instgrm-permalink direto
-    var bq = document.createElement('blockquote');
-    bq.className = 'instagram-media';
-    bq.setAttribute('data-instgrm-permalink', cleanUrl);
-    bq.setAttribute('data-instgrm-version', '14');
-    bq.setAttribute('data-instgrm-captioned', '');
-    bq.style.cssText = 'width:100%;min-width:0;max-width:100%;margin:0;background:#fff;border:0;border-radius:3px;box-shadow:none;padding:0;';
+    grid.innerHTML = '';
 
-    // Conteúdo de fallback dentro do blockquote (antes do embed.js processar)
-    bq.innerHTML =
-      '<div style="padding:16px;text-align:center;">' +
-        '<a href="' + cleanUrl + '" target="_blank" rel="noopener" ' +
-           'style="color:#C13584;font-size:13px;font-weight:600;text-decoration:none;">' +
-          'Ver no Instagram ↗' +
-        '</a>' +
-      '</div>';
-
-    wrap.appendChild(bq);
-    grid.appendChild(wrap);
-  });
-
-  // Chave do funcionamento: processa os embeds após inserir os blockquotes
-  if (window.instgrm) {
-    window.instgrm.Embeds.process();
-  } else {
-    // Carrega o embed.js do Instagram uma única vez
-    if (!document.getElementById('ig-embed-script')) {
-      var s = document.createElement('script');
-      s.id = 'ig-embed-script';
-      s.src = 'https://www.instagram.com/embed.js';
-      s.async = true;
-      document.body.appendChild(s);
+    if (validUrls.length === 0) {
+      grid.innerHTML =
+        '<div style="grid-column:1/-1;display:flex;align-items:center;justify-content:center;' +
+        'height:200px;color:var(--gray);font-size:13px;letter-spacing:2px;text-transform:uppercase">' +
+        '📷 Configure os posts no painel Admin</div>';
+      return;
     }
+
+    validUrls.forEach(function(url) {
+      try {
+        var cleanUrl = url.trim().endsWith('/') ? url.trim() : url.trim() + '/';
+
+        var wrap = document.createElement('div');
+        wrap.className = 'reel-item';
+
+        // Padrão blockquote com data-instgrm-permalink — método oficial Instagram
+        var bq = document.createElement('blockquote');
+        bq.className = 'instagram-media';
+        bq.setAttribute('data-instgrm-permalink', cleanUrl);
+        bq.setAttribute('data-instgrm-version', '14');
+        bq.setAttribute('data-instgrm-captioned', '');
+        bq.style.cssText = 'width:100%;min-width:0;max-width:100%;margin:0;background:#fff;border:0;border-radius:3px;box-shadow:none;padding:0;';
+
+        // Conteúdo de fallback visível enquanto o embed.js processa
+        bq.innerHTML =
+          '<div style="padding:16px;text-align:center;">' +
+            '<a href="' + cleanUrl + '" target="_blank" rel="noopener" ' +
+               'style="color:#C13584;font-size:13px;font-weight:600;text-decoration:none;">' +
+              'Ver no Instagram ↗' +
+            '</a>' +
+          '</div>';
+
+        wrap.appendChild(bq);
+        grid.appendChild(wrap);
+      } catch(itemErr) {
+        console.error('renderReels: erro ao criar item para URL', url, itemErr);
+      }
+    });
+
+    // Fix 3: Processa embeds com setTimeout para garantir que o DOM está pronto
+    // e que o embed.js (carregado no <head> com async) já executou
+    setTimeout(function() {
+      try {
+        if (window.instgrm && window.instgrm.Embeds) {
+          window.instgrm.Embeds.process();
+        }
+        // Segunda tentativa após 1s caso o script ainda esteja carregando
+        setTimeout(function() {
+          try {
+            if (window.instgrm && window.instgrm.Embeds) {
+              window.instgrm.Embeds.process();
+            }
+          } catch(e2) { console.warn('instgrm.Embeds.process (2ª tentativa):', e2); }
+        }, 1000);
+      } catch(e) {
+        console.warn('instgrm.Embeds.process:', e);
+      }
+    }, 300);
+
+  } catch(err) {
+    console.error('renderReels: erro geral:', err);
   }
 
-  if (window.lucide) lucide.createIcons();
+  try { if (window.lucide) lucide.createIcons(); } catch(e) {}
 }
 
 // ============================================================
@@ -3156,7 +3206,7 @@ window.saveLedVideo = async function() {
 window.saveReels = async function() {
   var urls = Array.from(document.querySelectorAll('#reels-manager .url-row')).map(function(r) { return r.querySelector('input').value.trim(); });
   var ok = await saveKeyToGitHub('reels', urls, 'btn-save-reels', 'fb-reels');
-  if (ok) renderReels(urls);
+  if (ok) { try { renderReels(urls); } catch(e) { console.error('renderReels após save:', e); } }
 };
 
 window.saveContent = async function(section) {
