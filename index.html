@@ -566,44 +566,21 @@ src="https://www.facebook.com/tr?id=906561028810787&ev=PageView&noscript=1"
   }
 
   .reel-item {
+    aspect-ratio: 9/16;
     background: var(--black3);
     border: 1px solid rgba(255,85,0,0.15);
     overflow: hidden;
     position: relative;
     cursor: pointer;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    min-height: 420px;
-  }
-
-  .reel-item blockquote.instagram-media {
-    width: 100% !important;
-    min-width: 0 !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    flex: 1;
-  }
-
-  .reel-item .ig-embed-wrap {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .reel-item .ig-embed-wrap blockquote {
-    margin: 0 !important;
-    width: 100% !important;
-    min-width: unset !important;
-    max-width: 100% !important;
+    max-height: 480px;
   }
 
   .reel-item iframe {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     border: none;
-    pointer-events: none;
   }
 
   .reel-placeholder {
@@ -1888,8 +1865,6 @@ src="https://www.facebook.com/tr?id=906561028810787&ev=PageView&noscript=1"
   }
 
 </style>
-<!-- Instagram embed.js carregado diretamente no HTML — independente de qualquer JS -->
-<script async src="https://www.instagram.com/embed.js"></script>
 </head>
 <body>
 <!-- Google Tag Manager (noscript) -->
@@ -2021,7 +1996,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <!-- Instagram/Bastidores -->
   <div class="reels-section">
-    <div class="reels-title">INSTAGRAM</div>
+    <div class="reels-title">BASTIDORES</div>
     <div class="reels-grid" id="reels-grid">
       <!-- Populated by JS -->
     </div>
@@ -2330,10 +2305,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
 
         <div class="content-block" style="margin-top:20px">
-          <div class="content-block-title">📸 Vídeos de Bastidores (Seção Quem Somos)</div>
-          <p style="font-size:12px;color:var(--gray);margin-bottom:15px">Cole URLs do Instagram (posts ou reels) para exibir na seção de bastidores.</p>
+          <div class="content-block-title">▶ YouTube Shorts — Bastidores (Seção Quem Somos)</div>
+          <p style="font-size:12px;color:var(--gray);margin-bottom:15px">Cole URLs de YouTube Shorts para exibir na seção de bastidores. Ex: https://www.youtube.com/shorts/xxxxxxxxxxx</p>
           <div class="url-manager" id="reels-manager"></div>
-          <button class="btn-add-url" onclick="addReelUrl()" style="margin-top:10px;width:100%">+ Adicionar URL do Instagram</button>
+          <button class="btn-add-url" onclick="addReelUrl()" style="margin-top:10px;width:100%">+ Adicionar URL do YouTube Short</button>
           <br><br>
           <button class="btn-save" id="btn-save-reels" onclick="saveReels()">Salvar</button>
           <span class="save-feedback" id="fb-reels">✓ Salvo!</span>
@@ -2752,7 +2727,7 @@ const DEFAULTS = {
   credentials: { user: 'admin', pass: 'admin123' },
   heroVideo:   { id: 'XUwc7w34efk', label: 'Assista nossa apresentação' },
   ledVideo:    { id: 'SvMmvrkKnH8', label: 'Ver painéis em ação' },
-  reels:       ['https://www.instagram.com/peninhamkteproducoes/p/DUBMg6qDY8i/', 'https://www.instagram.com/peninhamkteproducoes/reel/DQw-UQwjkAJ/', 'https://www.instagram.com/peninhamkteproducoes/reel/DVhZuoCjRx1/', 'https://www.instagram.com/peninhamkteproducoes/reel/DN4Jr8KjTwa/'],
+  reels:       ['', '', '', ''],
   photos: [
     { src: '', caption: 'Escritório',   placeholder: '🏢' },
     { src: '', caption: 'Estúdio',      placeholder: '🎥' },
@@ -2927,21 +2902,27 @@ function applyVideo(v, which) {
 }
 
 // ============================================================
-//  REELS / INSTAGRAM
+//  BASTIDORES / YOUTUBE SHORTS
 // ============================================================
+function ytShortId(url) {
+  // Extrai o ID de URLs de Shorts, vídeos normais ou youtu.be
+  if (!url) return '';
+  var m = url.match(/shorts\/([a-zA-Z0-9_-]{11})/)
+         || url.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/)
+         || url.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
+  return m ? m[1] : '';
+}
+
 function renderReels(reels) {
-  // Fix 6: Valida o elemento do DOM antes de qualquer coisa
+  // Valida o elemento do DOM antes de qualquer coisa
   var grid = document.getElementById('reels-grid');
   if (!grid) {
     console.warn('renderReels: elemento #reels-grid não encontrado');
     return;
   }
 
-  // Fix 2: Toda a função envolvida em try/catch
   try {
     var list = Array.isArray(reels) && reels.length ? reels : [];
-
-    // Filtra só URLs válidas
     var validUrls = list.filter(function(u) { return u && typeof u === 'string' && u.trim(); });
 
     grid.innerHTML = '';
@@ -2950,60 +2931,38 @@ function renderReels(reels) {
       grid.innerHTML =
         '<div style="grid-column:1/-1;display:flex;align-items:center;justify-content:center;' +
         'height:200px;color:var(--gray);font-size:13px;letter-spacing:2px;text-transform:uppercase">' +
-        '📷 Configure os posts no painel Admin</div>';
+        '▶ Configure os Shorts no painel Admin</div>';
       return;
     }
 
     validUrls.forEach(function(url) {
       try {
-        var cleanUrl = url.trim().endsWith('/') ? url.trim() : url.trim() + '/';
-
+        var id = ytShortId(url.trim());
         var wrap = document.createElement('div');
         wrap.className = 'reel-item';
 
-        // Padrão blockquote com data-instgrm-permalink — método oficial Instagram
-        var bq = document.createElement('blockquote');
-        bq.className = 'instagram-media';
-        bq.setAttribute('data-instgrm-permalink', cleanUrl);
-        bq.setAttribute('data-instgrm-version', '14');
-        bq.setAttribute('data-instgrm-captioned', '');
-        bq.style.cssText = 'width:100%;min-width:0;max-width:100%;margin:0;background:#fff;border:0;border-radius:3px;box-shadow:none;padding:0;';
-
-        // Conteúdo de fallback visível enquanto o embed.js processa
-        bq.innerHTML =
-          '<div style="padding:16px;text-align:center;">' +
-            '<a href="' + cleanUrl + '" target="_blank" rel="noopener" ' +
-               'style="color:#C13584;font-size:13px;font-weight:600;text-decoration:none;">' +
-              'Ver no Instagram ↗' +
-            '</a>' +
-          '</div>';
-
-        wrap.appendChild(bq);
+        if (id) {
+          // Embed do YouTube Shorts — confiável, sem bloqueios
+          var iframe = document.createElement('iframe');
+          iframe.src = 'https://www.youtube.com/embed/' + id + '?rel=0&modestbranding=1&playsinline=1';
+          iframe.setAttribute('allowfullscreen', '');
+          iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+          iframe.setAttribute('loading', 'lazy');
+          iframe.title = 'YouTube Short';
+          wrap.appendChild(iframe);
+        } else {
+          // Fallback: URL inválida
+          wrap.innerHTML =
+            '<div class="reel-placeholder" style="gap:14px">' +
+              '<div style="font-size:36px">▶</div>' +
+              '<p style="font-size:10px;letter-spacing:1px;text-align:center;padding:0 12px">URL inválida<br>Verifique o link</p>' +
+            '</div>';
+        }
         grid.appendChild(wrap);
       } catch(itemErr) {
-        console.error('renderReels: erro ao criar item para URL', url, itemErr);
+        console.error('renderReels: erro ao criar item:', url, itemErr);
       }
     });
-
-    // Fix 3: Processa embeds com setTimeout para garantir que o DOM está pronto
-    // e que o embed.js (carregado no <head> com async) já executou
-    setTimeout(function() {
-      try {
-        if (window.instgrm && window.instgrm.Embeds) {
-          window.instgrm.Embeds.process();
-        }
-        // Segunda tentativa após 1s caso o script ainda esteja carregando
-        setTimeout(function() {
-          try {
-            if (window.instgrm && window.instgrm.Embeds) {
-              window.instgrm.Embeds.process();
-            }
-          } catch(e2) { console.warn('instgrm.Embeds.process (2ª tentativa):', e2); }
-        }, 1000);
-      } catch(e) {
-        console.warn('instgrm.Embeds.process:', e);
-      }
-    }, 300);
 
   } catch(err) {
     console.error('renderReels: erro geral:', err);
@@ -3149,13 +3108,13 @@ function addReelRow(url, idx) {
   var n = idx !== undefined ? idx : mgr.children.length;
   var row = document.createElement('div');
   row.className = 'url-row';
-  row.innerHTML = '<span class="url-label">Post ' + (n+1) + '</span><input type="text" class="admin-input" style="margin:0" value="' + url.replace(/"/g,'&quot;') + '" placeholder="https://www.instagram.com/p/..."><button class="btn-remove" onclick="removeReelRow(this)">✕</button>';
+  row.innerHTML = '<span class="url-label">Post ' + (n+1) + '</span><input type="text" class="admin-input" style="margin:0" value="' + url.replace(/"/g,'&quot;') + '" placeholder="https://www.youtube.com/shorts/..."><button class="btn-remove" onclick="removeReelRow(this)">✕</button>';
   mgr.appendChild(row);
 }
 window.addReelUrl = function() { addReelRow('', document.getElementById('reels-manager').children.length); };
 window.removeReelRow = function(btn) {
   btn.parentElement.remove();
-  document.querySelectorAll('#reels-manager .url-row').forEach(function(r, i) { r.querySelector('.url-label').textContent = 'Post ' + (i+1); });
+  document.querySelectorAll('#reels-manager .url-row').forEach(function(r, i) { r.querySelector('.url-label').textContent = 'Short ' + (i+1); });
 };
 
 // ============================================================
