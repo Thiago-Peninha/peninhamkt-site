@@ -2368,8 +2368,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <input type="date" id="msg-date-to" class="msg-filter-select" style="padding:6px 10px;cursor:pointer" onchange="renderMsgs()">
             <button class="btn-filter" onclick="clearMsgDates()" style="padding:6px 12px;font-size:11px">Limpar datas</button>
           </div>
-          <button class="btn-export-msgs" onclick="exportMsgsCSV()">Exportar CSV</button>
-          <button class="btn-clear-msgs" onclick="clearAllMsgs()">Apagar Tudo</button>
+          <button class="btn-export-msgs" onclick="reloadLeadsFromGH()" style="background:rgba(255,85,0,0.15);color:var(--orange);border:1px solid rgba(255,85,0,0.3)">🔄 Recarregar</button>
+          <button class="btn-export-msgs" onclick="exportMsgsCSV()">⬇ Exportar CSV</button>
+          <button class="btn-clear-msgs" onclick="clearAllMsgs()">🗑 Apagar Tudo</button>
         </div>
         <div id="msgs-list">
           <!-- Populated by JS -->
@@ -3031,11 +3032,20 @@ window.doLogin = function() {
     document.getElementById('admin-user').value = '';
     document.getElementById('admin-pass').value = '';
     loadAdminFields();
-    renderMsgs();
     updateMsgBadge();
     // Atualiza ponto de status do token
     var dot = document.getElementById('gh-token-dot');
     if (dot) dot.style.background = getGhToken() ? '#4CAF50' : '#ff6666';
+    // Carrega leads do GitHub ao abrir o admin
+    var msgList = document.getElementById('msgs-list');
+    if (msgList) msgList.innerHTML = '<div style="text-align:center;padding:40px;color:var(--gray);font-size:13px">🔄 Carregando leads do GitHub...</div>';
+    loadLeadsFromGitHub().then(function() {
+      renderMsgs();
+      updateMsgBadge();
+    }).catch(function() {
+      renderMsgs();
+      updateMsgBadge();
+    });
   } else {
     document.getElementById('login-error').style.display = 'block';
   }
@@ -3280,11 +3290,14 @@ window.submitForm = function() {
     data:    new Date().toLocaleString('pt-BR')
   };
 
-  // Save to localStorage
-  var submissions = JSON.parse(localStorage.getItem('pen_submissions') || '[]');
-  submissions.unshift(lead); // newest first
-  localStorage.setItem('pen_submissions', JSON.stringify(submissions));
-  updateMsgBadge();
+  // Salva no GitHub (acumulando) — com fallback local se GitHub falhar
+  appendLeadToGitHub(lead).then(function(ok) {
+    if (!ok) console.warn('Lead salvo só localmente — GitHub indisponível ou token ausente');
+    updateMsgBadge();
+  }).catch(function(e) {
+    console.error('appendLeadToGitHub erro:', e);
+    updateMsgBadge();
+  });
 
   // Reset form
   ['form-name','form-phone','form-email','form-company','form-sector'].forEach(function(id) {
@@ -3335,12 +3348,88 @@ window.clearMsgDates = function() {
   if (dt) dt.value = '';
   renderMsgs();
 };
+// ── Leads: lê do cache local (atualizado pelo GitHub) ─────────
 function getMsgs() {
-  try { return JSON.parse(localStorage.getItem('pen_submissions') || '[]'); } catch { return []; }
+  try { return JSON.parse(localStorage.getItem('pen_leads_cache') || '[]'); } catch { return []; }
+}
+
+// ── Carrega leads do GitHub (leads.json separado) ─────────────
+async function loadLeadsFromGitHub() {
+  try {
+    var url = 'https://raw.githubusercontent.com/Thiago-Peninha/peninhamkt-site/main/leads.json?_=' + Date.now();
+    var res = await fetch(url);
+    if (!res.ok) return getMsgs();
+    var data = await res.json();
+    var arr = Array.isArray(data) ? data : [];
+    localStorage.setItem('pen_leads_cache', JSON.stringify(arr));
+    return arr;
+  } catch(e) {
+    console.warn('loadLeadsFromGitHub: usando cache local', e);
+    return getMsgs();
+  }
+}
+
+// ── Adiciona 1 lead no GitHub — ACUMULA, nunca sobrescreve ───
+async function appendLeadToGitHub(lead) {
+  var token = getGhToken();
+  if (!token) {
+    var local = getMsgs(); local.unshift(lead);
+    localStorage.setItem('pen_leads_cache', JSON.stringify(local));
+    console.warn('Token ausente — lead salvo só localmente');
+    return false;
+  }
+  try {
+    var ghUrl = 'https://api.github.com/repos/Thiago-Peninha/peninhamkt-site/contents/leads.json';
+    var getRes = await fetch(ghUrl + '?ref=main', {
+      headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    var currentLeads = [], sha = '';
+    if (getRes.ok) {
+      var meta = await getRes.json(); sha = meta.sha || '';
+      try { currentLeads = JSON.parse(atob(meta.content.replace(/
+/g, ''))); } catch(e) { currentLeads = []; }
+    }
+    currentLeads.unshift(lead); // novo lead no topo
+    var body = {
+      message: 'Lead: ' + (lead.nome||'') + ' — ' + (lead.data||''),
+      content: btoa(unescape(encodeURIComponent(JSON.stringify(currentLeads, null, 2)))),
+      branch: 'main'
+    };
+    if (sha) body.sha = sha;
+    var putRes = await fetch(ghUrl, {
+      method: 'PUT',
+      headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    localStorage.setItem('pen_leads_cache', JSON.stringify(currentLeads));
+    return putRes.ok;
+  } catch(e) {
+    console.error('appendLeadToGitHub:', e);
+    var local = getMsgs(); local.unshift(lead);
+    localStorage.setItem('pen_leads_cache', JSON.stringify(local));
+    return false;
+  }
+}
+
+// ── Persiste alterações (lido/apagado) no GitHub ─────────────
+async function saveMsgsToGitHub(arr) {
+  var token = getGhToken();
+  localStorage.setItem('pen_leads_cache', JSON.stringify(arr));
+  if (!token) return;
+  try {
+    var ghUrl = 'https://api.github.com/repos/Thiago-Peninha/peninhamkt-site/contents/leads.json';
+    var getRes = await fetch(ghUrl + '?ref=main', { headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' } });
+    var sha = '';
+    if (getRes.ok) { var meta = await getRes.json(); sha = meta.sha || ''; }
+    var body = { message: 'Leads: atualização', content: btoa(unescape(encodeURIComponent(JSON.stringify(arr, null, 2)))), branch: 'main' };
+    if (sha) body.sha = sha;
+    await fetch(ghUrl, { method: 'PUT', headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  } catch(e) { console.error('saveMsgsToGitHub:', e); }
 }
 
 function saveMsgs(arr) {
-  localStorage.setItem('pen_submissions', JSON.stringify(arr));
+  localStorage.setItem('pen_leads_cache', JSON.stringify(arr));
+  saveMsgsToGitHub(arr);
 }
 
 function updateMsgBadge() {
@@ -3438,20 +3527,28 @@ function renderMsgs() {
   if (window.lucide) lucide.createIcons();
 }
 
+window.reloadLeadsFromGH = function() {
+  var msgList = document.getElementById('msgs-list');
+  if (msgList) msgList.innerHTML = '<div style="text-align:center;padding:40px;color:var(--gray);font-size:13px">🔄 Buscando leads no GitHub...</div>';
+  loadLeadsFromGitHub().then(function() {
+    renderMsgs();
+    updateMsgBadge();
+  });
+};
+
 window.toggleMsg = function(id) {
   var card = document.getElementById('msg-card-' + id);
   if (!card) return;
   var isOpen = card.classList.contains('open');
-  // Mark as read
+  // Marca como lido e persiste no GitHub
   var msgs = getMsgs();
   msgs = msgs.map(function(m) {
     if (m.id === id) m.novo = false;
     return m;
   });
-  saveMsgs(msgs);
+  saveMsgs(msgs); // salva local + GitHub
   updateMsgBadge();
   card.classList.toggle('open', !isOpen);
-  // Remove new dot
   var dot = card.querySelector('.msg-new-dot');
   if (dot) dot.remove();
 };
@@ -3459,14 +3556,14 @@ window.toggleMsg = function(id) {
 window.deleteMsg = function(id) {
   if (!confirm('Apagar esta mensagem?')) return;
   var msgs = getMsgs().filter(function(m) { return m.id !== id; });
-  saveMsgs(msgs);
+  saveMsgs(msgs); // salva local + GitHub
   renderMsgs();
   updateMsgBadge();
 };
 
 window.clearAllMsgs = function() {
-  if (!confirm('Apagar TODAS as mensagens? Esta ação não pode ser desfeita.')) return;
-  saveMsgs([]);
+  if (!confirm('Apagar TODOS os leads? Esta ação não pode ser desfeita.')) return;
+  saveMsgs([]); // salva local + GitHub
   renderMsgs();
   updateMsgBadge();
 };
