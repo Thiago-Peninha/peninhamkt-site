@@ -562,7 +562,6 @@ src="https://www.facebook.com/tr?id=906561028810787&ev=PageView&noscript=1"
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 12px;
-    align-items: start;
   }
 
   .reel-item {
@@ -572,15 +571,14 @@ src="https://www.facebook.com/tr?id=906561028810787&ev=PageView&noscript=1"
     overflow: hidden;
     position: relative;
     cursor: pointer;
-    max-height: 480px;
+    max-height: 320px;
   }
 
   .reel-item iframe {
-    position: absolute;
-    inset: 0;
     width: 100%;
     height: 100%;
     border: none;
+    pointer-events: none;
   }
 
   .reel-placeholder {
@@ -1996,7 +1994,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <!-- Instagram/Bastidores -->
   <div class="reels-section">
-    <div class="reels-title">BASTIDORES</div>
+    <div class="reels-title">INSTAGRAM</div>
     <div class="reels-grid" id="reels-grid">
       <!-- Populated by JS -->
     </div>
@@ -2233,7 +2231,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <button class="admin-tab" onclick="switchTab('fotos')">Fotos</button>
         <button class="admin-tab" onclick="switchTab('mensagens')" id="tab-btn-mensagens">Mensagens <span id="msg-badge" style="background:var(--orange);color:#000;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:4px;display:none">0</span></button>
         <button class="admin-tab" onclick="switchTab('conteudo')">Conteúdo</button>
-        <button class="admin-tab" onclick="switchTab('github')" id="tab-btn-github">🔗 GitHub <span id="gh-token-dot" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#ff6666;vertical-align:middle;margin-left:3px"></span></button>
         <button class="admin-tab" onclick="switchTab('acesso')">Acesso</button>
       </div>
 
@@ -2293,7 +2290,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <div class="content-block-title">🎬 Vídeo Principal (Hero)</div>
           <p style="font-size:12px;color:var(--gray);margin-bottom:15px;letter-spacing:0.5px">Cole o ID do vídeo do YouTube (ex: dQw4w9WgXcQ) ou a URL completa.</p>
           <div class="form-group">
-            <label>ID ou URL do YouTube</label>
+            <label>https://www.youtube.com/watch?v=XUwc7w34efk</label>
             <input type="text" class="admin-input" id="hero-video-id" placeholder="ex: dQw4w9WgXcQ ou https://youtu.be/dQw4w9WgXcQ">
           </div>
           <div class="form-group">
@@ -2305,10 +2302,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
 
         <div class="content-block" style="margin-top:20px">
-          <div class="content-block-title">▶ YouTube Shorts — Bastidores (Seção Quem Somos)</div>
-          <p style="font-size:12px;color:var(--gray);margin-bottom:15px">Cole URLs de YouTube Shorts para exibir na seção de bastidores. Ex: https://www.youtube.com/shorts/xxxxxxxxxxx</p>
+          <div class="content-block-title">📸 Vídeos de Bastidores (Seção Quem Somos)</div>
+          <p style="font-size:12px;color:var(--gray);margin-bottom:15px">Cole URLs do Instagram (posts ou reels) para exibir na seção de bastidores.</p>
           <div class="url-manager" id="reels-manager"></div>
-          <button class="btn-add-url" onclick="addReelUrl()" style="margin-top:10px;width:100%">+ Adicionar URL do YouTube Short</button>
+          <button class="btn-add-url" onclick="addReelUrl()" style="margin-top:10px;width:100%">+ Adicionar URL do Instagram</button>
           <br><br>
           <button class="btn-save" id="btn-save-reels" onclick="saveReels()">Salvar</button>
           <span class="save-feedback" id="fb-reels">✓ Salvo!</span>
@@ -2368,9 +2365,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <input type="date" id="msg-date-to" class="msg-filter-select" style="padding:6px 10px;cursor:pointer" onchange="renderMsgs()">
             <button class="btn-filter" onclick="clearMsgDates()" style="padding:6px 12px;font-size:11px">Limpar datas</button>
           </div>
-          <button class="btn-export-msgs" onclick="reloadLeadsFromGH()" style="background:rgba(255,85,0,0.15);color:var(--orange);border:1px solid rgba(255,85,0,0.3)">🔄 Recarregar</button>
-          <button class="btn-export-msgs" onclick="exportMsgsCSV()">⬇ Exportar CSV</button>
-          <button class="btn-clear-msgs" onclick="clearAllMsgs()">🗑 Apagar Tudo</button>
+          <button class="btn-export-msgs" onclick="exportMsgsCSV()">Exportar CSV</button>
+          <button class="btn-clear-msgs" onclick="clearAllMsgs()">Apagar Tudo</button>
         </div>
         <div id="msgs-list">
           <!-- Populated by JS -->
@@ -2481,19 +2477,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <p style="font-size:12px;color:var(--gray);margin-bottom:14px;letter-spacing:.4px">Links dos ícones de redes sociais exibidos no rodapé do site.</p>
             <div class="form-group">
               <label>Facebook (URL completa)</label>
-              <input type="text" class="admin-input" id="ct-fb-link" placeholder="https://facebook.com/suapagina">
+              <input type="text" class="admin-input" id="ct-fb-link" placeholder="https://www.facebook.com/peninhaproducoes">
             </div>
             <div class="form-group">
               <label>Instagram (URL completa)</label>
-              <input type="text" class="admin-input" id="ct-ig-link-social" placeholder="https://instagram.com/seuusuario">
+              <input type="text" class="admin-input" id="ct-ig-link-social" placeholder="https://www.instagram.com/peninhamkteproducoes">
             </div>
             <div class="form-group">
               <label>LinkedIn (URL completa)</label>
-              <input type="text" class="admin-input" id="ct-li-link" placeholder="https://linkedin.com/company/suaempresa">
+              <input type="text" class="admin-input" id="ct-li-link" placeholder="https://linkedin.com">
             </div>
             <div class="form-group">
               <label>YouTube (URL completa)</label>
-              <input type="text" class="admin-input" id="ct-yt-link" placeholder="https://youtube.com/@seucanal">
+              <input type="text" class="admin-input" id="ct-yt-link" placeholder="https://www.youtube.com/@PeninhaProdu%C3%A7%C3%B5eseMKT">
             </div>
             <button class="btn-save" id="btn-save-social" onclick="saveContent('social')">Salvar</button>
             <span class="save-feedback" id="fb-social">✓ Salvo!</span>
@@ -2503,58 +2499,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
 
       <!-- ACESSO -->
-      <div class="admin-section" id="tab-github">
-        <div class="pwd-box" style="max-width:600px">
-          <h3>🔗 CONEXÃO COM GITHUB</h3>
-          <p style="font-size:13px;color:var(--gray);margin-bottom:20px;line-height:1.7">
-            O conteúdo do site é salvo diretamente no seu repositório GitHub.<br>
-            Para isso funcionar, você precisa configurar um <strong style="color:var(--white)">Personal Access Token</strong> com permissão de escrita.
-          </p>
-
-          <!-- Status badge -->
-          <div id="gh-token-badge" style="display:inline-block;padding:6px 14px;border-radius:4px;font-size:12px;font-weight:700;letter-spacing:1px;margin-bottom:24px">
-            Verificando...
-          </div>
-
-          <!-- Repositório info -->
-          <div style="background:rgba(255,85,0,0.06);border:1px solid rgba(255,85,0,0.2);border-radius:4px;padding:14px 16px;margin-bottom:24px;font-size:12px;font-family:monospace;color:var(--white-dim)">
-            📁 Repositório: <strong style="color:var(--orange)">Thiago-Peninha/peninhamkt-site</strong><br>
-            📄 Arquivo de dados: <strong style="color:var(--orange)">content.json</strong>
-          </div>
-
-          <!-- Instruções passo a passo -->
-          <div style="margin-bottom:24px">
-            <p style="font-size:12px;font-weight:700;letter-spacing:2px;color:var(--orange);margin-bottom:12px;text-transform:uppercase">Como gerar o token:</p>
-            <ol style="font-size:13px;color:var(--white-dim);line-height:2;padding-left:20px">
-              <li>Acesse <a href="https://github.com/settings/tokens/new" target="_blank" style="color:var(--orange)">github.com/settings/tokens/new</a></li>
-              <li>Em <em>Note</em>, escreva: <code style="background:rgba(255,255,255,0.08);padding:2px 6px;border-radius:3px">Peninha Site CMS</code></li>
-              <li>Em <em>Expiration</em>, selecione <strong style="color:var(--white)">No expiration</strong></li>
-              <li>Marque a permissão: <code style="background:rgba(255,255,255,0.08);padding:2px 6px;border-radius:3px">✅ repo</code> (acesso completo)</li>
-              <li>Clique em <strong style="color:var(--white)">Generate token</strong> e copie o token gerado</li>
-              <li>Cole abaixo e clique em <strong style="color:var(--white)">Salvar Token</strong></li>
-            </ol>
-          </div>
-
-          <!-- Input do token -->
-          <div class="admin-form-group">
-            <label>Personal Access Token</label>
-            <input type="password" class="admin-input" id="gh-token-input" placeholder="Cole seu token aqui..." autocomplete="off" style="font-family:monospace;letter-spacing:2px">
-          </div>
-          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">
-            <button class="btn-save" onclick="saveGhToken()">💾 Salvar Token</button>
-            <button class="btn-save" onclick="testGhToken()" style="background:rgba(255,85,0,0.15);color:var(--orange);border:1px solid rgba(255,85,0,0.3)">🔌 Testar Conexão</button>
-            <button class="btn-save" onclick="removeGhToken()" style="background:rgba(255,0,0,0.1);color:#ff6666;border:1px solid rgba(255,0,0,0.2)">🗑 Remover Token</button>
-          </div>
-          <div id="gh-token-feedback" style="display:none;font-size:13px;padding:8px 0"></div>
-
-          <div style="margin-top:24px;padding:14px 16px;background:rgba(255,255,255,0.04);border-radius:4px;border-left:3px solid rgba(255,85,0,0.4)">
-            <p style="font-size:12px;color:var(--gray);line-height:1.8">
-              🔒 <strong style="color:var(--white-dim)">Segurança:</strong> O token fica salvo apenas neste navegador (localStorage). Nunca é enviado a terceiros — apenas à API oficial do GitHub. Cada computador que usar o admin precisa configurar o token uma vez.
-            </p>
-          </div>
-        </div>
-      </div>
-
       <div class="admin-section" id="tab-acesso">
         <div class="pwd-box">
           <h3>🔑 ALTERAR LOGIN</h3>
@@ -2627,107 +2571,21 @@ function getLucideIcon(name, size, color) {
 }
 
 // ============================================================
-//  PENINHA PRODUÇÕES — CMS com sincronização via GitHub
+//  PENINHA PRODUÇÕES — CMS via localStorage
 //
 //  Como funciona:
-//  • O conteúdo fica salvo em content.json no repositório GitHub.
-//  • Ao carregar, o site busca o content.json público — todos veem igual.
-//  • Ao salvar no admin, a GitHub API atualiza o content.json online.
-//  • O token GitHub fica salvo apenas localmente (localStorage) por segurança.
+//  • Links (YouTube, Instagram, WhatsApp) ficam salvos no localStorage
+//    do SERVIDOR/hospedagem — quando você faz upload do arquivo com as
+//    alterações, TODOS os visitantes veem as mudanças.
+//  • O botão "Salvar" atualiza o localStorage e aplica na página.
+//  • Para persistência real entre visitantes sem re-upload,
+//    basta apontar as funções dbGet/dbSet para um backend simples.
 // ============================================================
-
-// ── Configuração GitHub ──────────────────────────────────────
-var GH_OWNER = 'Thiago-Peninha';
-var GH_REPO  = 'peninhamkt-site';
-var GH_FILE  = 'content.json';
-var GH_BRANCH = 'main';
-var GH_RAW_URL = 'https://raw.githubusercontent.com/' + GH_OWNER + '/' + GH_REPO + '/' + GH_BRANCH + '/' + GH_FILE;
-var GH_API_URL = 'https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + GH_FILE;
-
-function getGhToken() { try { return localStorage.getItem('pen_gh_token') || ''; } catch { return ''; } }
-function setGhToken(t) { try { localStorage.setItem('pen_gh_token', t); } catch {} }
-
-// ── Busca o content.json do GitHub (leitura pública, sem token) ──
-async function ghLoad() {
-  try {
-    var res = await fetch(GH_RAW_URL + '?_=' + Date.now());
-    if (!res.ok) return null;
-    return await res.json();
-  } catch(e) { return null; }
-}
-
-// ── Salva o content.json no GitHub via API ───────────────────
-async function ghSave(data) {
-  var token = getGhToken();
-  if (!token) {
-    showGhTokenAlert();
-    return false;
-  }
-  try {
-    // 1. Busca o SHA atual do arquivo (necessário para update)
-    var getRes = await fetch(GH_API_URL + '?ref=' + GH_BRANCH, {
-      headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
-    });
-    var sha = '';
-    if (getRes.ok) {
-      var meta = await getRes.json();
-      sha = meta.sha || '';
-    }
-    // 2. Faz o commit com o novo conteúdo
-    var body = {
-      message: 'CMS: atualização de conteúdo',
-      content: btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2)))),
-      branch: GH_BRANCH
-    };
-    if (sha) body.sha = sha;
-    var putRes = await fetch(GH_API_URL, {
-      method: 'PUT',
-      headers: {
-        'Authorization': 'token ' + token,
-        'Accept': 'application/vnd.github.v3+json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(body)
-    });
-    if (!putRes.ok) {
-      var err = await putRes.json();
-      if (putRes.status === 401 || putRes.status === 403) showGhTokenAlert();
-      console.error('GitHub save error:', err);
-      return false;
-    }
-    return true;
-  } catch(e) {
-    console.error('ghSave error:', e);
-    return false;
-  }
-}
-
-function showGhTokenAlert() {
-  alert('⚠️ Token do GitHub não configurado ou inválido!\n\nVá em: Admin → Aba "GitHub" e configure seu token de acesso.');
-}
-
-// ── Alerta visual no admin quando token não está configurado ──
-function checkGhTokenStatus() {
-  var token = getGhToken();
-  var badge = document.getElementById('gh-token-badge');
-  if (!badge) return;
-  if (token) {
-    badge.textContent = '✓ Token configurado';
-    badge.style.background = 'rgba(76,175,80,0.15)';
-    badge.style.color = '#4CAF50';
-    badge.style.border = '1px solid rgba(76,175,80,0.3)';
-  } else {
-    badge.textContent = '⚠ Token não configurado';
-    badge.style.background = 'rgba(255,85,0,0.15)';
-    badge.style.color = '#FF5500';
-    badge.style.border = '1px solid rgba(255,85,0,0.3)';
-  }
-}
 
 const DEFAULTS = {
   credentials: { user: 'admin', pass: 'admin123' },
-  heroVideo:   { id: 'XUwc7w34efk', label: 'Assista nossa apresentação' },
-  ledVideo:    { id: 'SvMmvrkKnH8', label: 'Ver painéis em ação' },
+  heroVideo:   { id: '', label: 'Assista nossa apresentação' },
+  ledVideo:    { id: '', label: 'Ver painéis em ação' },
   reels:       ['', '', '', ''],
   photos: [
     { src: '', caption: 'Escritório',   placeholder: '🏢' },
@@ -2750,10 +2608,10 @@ const DEFAULTS = {
     phone: '', phoneDisplay: '', ig: '',
     contactDesc: 'Estamos prontos para iniciar imediatamente. Preencha o formulário e retornaremos o mais breve possível para planejarmos os conteúdos e campanhas da sua empresa.',
     obrigadoTitle: 'ENVIADA!',
-    fbLink: 'https://www.facebook.com/peninhaproducoes',
-    igLink: 'https://www.instagram.com/peninhamkteproducoes',
-    liLink: 'https://www.linkedin.com',
-    ytLink: 'https://www.youtube.com/@PeninhaProdu%C3%A7%C3%B5eseMKT',
+    fbLink: '',
+    igLink: '',
+    liLink: '',
+    ytLink: '',
     obrigadoSub: 'Recebemos seu contato e em breve um de nossos especialistas vai entrar em contato com você.\n\nFique de olho no seu WhatsApp e e-mail!',
   }
 };
@@ -2762,77 +2620,17 @@ function lsGet(k) { try { return JSON.parse(localStorage.getItem('pen_'+k)) || n
 function lsSet(k, v) { localStorage.setItem('pen_'+k, JSON.stringify(v)); }
 function getData(k) { return lsGet(k) ?? JSON.parse(JSON.stringify(DEFAULTS[k])); }
 
-// ── Estado em memória (carregado do GitHub) ──────────────────
-var _ghData = null;
-function getGhData(k) {
-  if (_ghData && _ghData[k] !== undefined) return _ghData[k];
-  return JSON.parse(JSON.stringify(DEFAULTS[k]));
-}
-function setGhData(k, v) {
-  if (!_ghData) _ghData = {};
-  _ghData[k] = v;
-}
-
 // ============================================================
-//  PROTEÇÃO GLOBAL — captura erros sem quebrar a página
+//  INIT
 // ============================================================
-window.addEventListener('error', function(e) {
-  console.error('Erro global capturado:', e.message, e.filename, e.lineno);
-});
-window.addEventListener('unhandledrejection', function(e) {
-  console.error('Promise rejeitada não tratada:', e.reason);
-});
-
-// ============================================================
-//  INIT — carrega do GitHub; fallback para localStorage
-// ============================================================
-document.addEventListener('DOMContentLoaded', async () => {
-  // Mostra loading indicator sutil
-  var loadEl = document.getElementById('gh-load-status');
-
-  try {
-    // Tenta carregar do GitHub
-    var remote = await ghLoad();
-    if (remote) {
-      _ghData = remote;
-      // Sincroniza localStorage como cache local
-      ['content','heroVideo','ledVideo','reels','photos'].forEach(function(k) {
-        if (remote[k]) lsSet(k, remote[k]);
-      });
-      if (loadEl) { loadEl.textContent = ''; loadEl.style.display = 'none'; }
-    } else {
-      // Fallback: usa localStorage (dados locais antigos)
-      _ghData = {};
-      ['content','heroVideo','ledVideo','reels','photos'].forEach(function(k) {
-        var cached = lsGet(k);
-        if (cached) _ghData[k] = cached;
-      });
-      if (loadEl) { loadEl.textContent = ''; loadEl.style.display = 'none'; }
-    }
-  } catch(initErr) {
-    console.error('Erro no carregamento inicial — usando defaults:', initErr);
-    _ghData = _ghData || {};
-    if (loadEl) { loadEl.style.display = 'none'; }
-  }
-
-  try { applyContent(getGhData('content')); } catch(e) { console.error('applyContent:', e); }
-  try { renderAgencyPhotos(getGhData('photos')); } catch(e) { console.error('renderAgencyPhotos:', e); }
-  try { applyVideo(getGhData('heroVideo'), 'hero'); } catch(e) { console.error('applyVideo hero:', e); }
-  try { applyVideo(getGhData('ledVideo'), 'led'); } catch(e) { console.error('applyVideo led:', e); }
-
-  // Reels renderizados de forma independente — nunca bloqueia o restante
-  try {
-    renderReels(getGhData('reels'));
-  } catch(e) {
-    console.error('renderReels falhou no init — tentando recuperar:', e);
-    try { renderReels([]); } catch(e2) { console.error('renderReels recovery falhou:', e2); }
-  }
-
-  try { renderPageStats(null, null); } catch(e) { console.error('renderPageStats:', e); }
-  try {
-    var dateEl = document.getElementById('date-to');
-    if (dateEl) dateEl.value = new Date().toISOString().split('T')[0];
-  } catch(e) { console.error('date-to:', e); }
+document.addEventListener('DOMContentLoaded', () => {
+  applyContent(getData('content'));
+  renderAgencyPhotos(getData('photos'));
+  applyVideo(getData('heroVideo'), 'hero');
+  applyVideo(getData('ledVideo'),  'led');
+  renderReels(getData('reels'));
+  renderPageStats(null, null);
+  document.getElementById('date-to').value = new Date().toISOString().split('T')[0];
 });
 
 // ============================================================
@@ -2903,73 +2701,28 @@ function applyVideo(v, which) {
 }
 
 // ============================================================
-//  BASTIDORES / YOUTUBE SHORTS
+//  REELS / INSTAGRAM
 // ============================================================
-function ytShortId(url) {
-  // Extrai o ID de URLs de Shorts, vídeos normais ou youtu.be
-  if (!url) return '';
-  var m = url.match(/shorts\/([a-zA-Z0-9_-]{11})/)
-         || url.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/)
-         || url.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
-  return m ? m[1] : '';
-}
-
 function renderReels(reels) {
-  // Valida o elemento do DOM antes de qualquer coisa
-  var grid = document.getElementById('reels-grid');
-  if (!grid) {
-    console.warn('renderReels: elemento #reels-grid não encontrado');
-    return;
-  }
-
-  try {
-    var list = Array.isArray(reels) && reels.length ? reels : [];
-    var validUrls = list.filter(function(u) { return u && typeof u === 'string' && u.trim(); });
-
-    grid.innerHTML = '';
-
-    if (validUrls.length === 0) {
-      grid.innerHTML =
-        '<div style="grid-column:1/-1;display:flex;align-items:center;justify-content:center;' +
-        'height:200px;color:var(--gray);font-size:13px;letter-spacing:2px;text-transform:uppercase">' +
-        '▶ Configure os Shorts no painel Admin</div>';
-      return;
+  const grid = document.getElementById('reels-grid');
+  if (!grid) return;
+  const list = Array.isArray(reels) && reels.length ? reels : ['', '', ''];
+  grid.innerHTML = '';
+  list.forEach(function(url, i) {
+    var el = document.createElement('div');
+    el.className = 'reel-item';
+    if (url) {
+      el.style.cursor = 'pointer';
+      el.innerHTML = '<div class="reel-placeholder"><div class="ig-icon">📸</div><p>Post ' + (i+1) + '</p><p style="margin-top:6px;font-size:9px;color:#555">Clique para abrir no Instagram</p></div><div style="position:absolute;inset:0;background:rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .3s;font-size:28px" class="rov">▶</div>';
+      el.onmouseenter = function() { el.querySelector('.rov').style.opacity = '1'; };
+      el.onmouseleave = function() { el.querySelector('.rov').style.opacity = '0'; };
+      el.onclick = function() { window.open(url, '_blank'); };
+    } else {
+      el.innerHTML = '<div class="reel-placeholder"><div class="ig-icon">📷</div><p>Post ' + (i+1) + '<br><span style="color:#555;font-size:9px">Configure no Admin</span></p></div>';
     }
-
-    validUrls.forEach(function(url) {
-      try {
-        var id = ytShortId(url.trim());
-        var wrap = document.createElement('div');
-        wrap.className = 'reel-item';
-
-        if (id) {
-          // Embed do YouTube Shorts — confiável, sem bloqueios
-          var iframe = document.createElement('iframe');
-          iframe.src = 'https://www.youtube.com/embed/' + id + '?rel=0&modestbranding=1&playsinline=1';
-          iframe.setAttribute('allowfullscreen', '');
-          iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
-          iframe.setAttribute('loading', 'lazy');
-          iframe.title = 'YouTube Short';
-          wrap.appendChild(iframe);
-        } else {
-          // Fallback: URL inválida
-          wrap.innerHTML =
-            '<div class="reel-placeholder" style="gap:14px">' +
-              '<div style="font-size:36px">▶</div>' +
-              '<p style="font-size:10px;letter-spacing:1px;text-align:center;padding:0 12px">URL inválida<br>Verifique o link</p>' +
-            '</div>';
-        }
-        grid.appendChild(wrap);
-      } catch(itemErr) {
-        console.error('renderReels: erro ao criar item:', url, itemErr);
-      }
-    });
-
-  } catch(err) {
-    console.error('renderReels: erro geral:', err);
-  }
-
-  try { if (window.lucide) lucide.createIcons(); } catch(e) {}
+    grid.appendChild(el);
+  });
+  if (window.lucide) lucide.createIcons();
 }
 
 // ============================================================
@@ -3011,11 +2764,6 @@ window.openAdmin = function() {
   document.getElementById('login-screen').style.display  = 'flex';
   document.getElementById('admin-panel').style.display   = 'none';
   document.body.style.overflow = 'hidden';
-  // Atualiza o ponto de status na aba GitHub
-  setTimeout(function() {
-    var dot = document.getElementById('gh-token-dot');
-    if (dot) dot.style.background = getGhToken() ? '#4CAF50' : '#ff6666';
-  }, 100);
 };
 window.closeAdmin = function() {
   document.getElementById('admin-overlay').style.display = 'none';
@@ -3032,20 +2780,8 @@ window.doLogin = function() {
     document.getElementById('admin-user').value = '';
     document.getElementById('admin-pass').value = '';
     loadAdminFields();
+    renderMsgs();
     updateMsgBadge();
-    // Atualiza ponto de status do token
-    var dot = document.getElementById('gh-token-dot');
-    if (dot) dot.style.background = getGhToken() ? '#4CAF50' : '#ff6666';
-    // Carrega leads do GitHub ao abrir o admin
-    var msgList = document.getElementById('msgs-list');
-    if (msgList) msgList.innerHTML = '<div style="text-align:center;padding:40px;color:var(--gray);font-size:13px">🔄 Carregando leads do GitHub...</div>';
-    loadLeadsFromGitHub().then(function() {
-      renderMsgs();
-      updateMsgBadge();
-    }).catch(function() {
-      renderMsgs();
-      updateMsgBadge();
-    });
   } else {
     document.getElementById('login-error').style.display = 'block';
   }
@@ -3059,20 +2795,16 @@ window.switchTab = function(tab) {
   document.querySelectorAll('.admin-section').forEach(function(s) { s.classList.remove('active'); });
   event.target.classList.add('active');
   document.getElementById('tab-' + tab).classList.add('active');
-  if (tab === 'github') checkGhTokenStatus();
-  // Atualiza o ponto de status na aba GitHub
-  var dot = document.getElementById('gh-token-dot');
-  if (dot) dot.style.background = getGhToken() ? '#4CAF50' : '#ff6666';
 };
 
 // ============================================================
 //  LOAD ADMIN FIELDS
 // ============================================================
 function loadAdminFields() {
-  var c = getGhData('content');
-  var v = getGhData('heroVideo');
-  var lv = getGhData('ledVideo');
-  var r = getGhData('reels');
+  var c = getData('content');
+  var v = getData('heroVideo');
+  var lv = getData('ledVideo');
+  var r = getData('reels');
   document.getElementById('hero-video-id').value        = v.id    || '';
   document.getElementById('hero-video-label').value     = v.label || '';
   document.getElementById('led-video-id').value         = lv.id   || '';
@@ -3103,10 +2835,7 @@ function loadAdminFields() {
   rl.forEach(function(url, i) { addReelRow(url, i); });
 
   // Build photo manager
-  buildPhotoManager(getGhData('photos'));
-
-  // Atualiza status do token GitHub
-  checkGhTokenStatus();
+  buildPhotoManager(getData('photos'));
 }
 
 // ============================================================
@@ -3118,69 +2847,63 @@ function addReelRow(url, idx) {
   var n = idx !== undefined ? idx : mgr.children.length;
   var row = document.createElement('div');
   row.className = 'url-row';
-  row.innerHTML = '<span class="url-label">Post ' + (n+1) + '</span><input type="text" class="admin-input" style="margin:0" value="' + url.replace(/"/g,'&quot;') + '" placeholder="https://www.youtube.com/shorts/..."><button class="btn-remove" onclick="removeReelRow(this)">✕</button>';
+  row.innerHTML = '<span class="url-label">Post ' + (n+1) + '</span><input type="text" class="admin-input" style="margin:0" value="' + url.replace(/"/g,'&quot;') + '" placeholder="https://www.instagram.com/p/..."><button class="btn-remove" onclick="removeReelRow(this)">✕</button>';
   mgr.appendChild(row);
 }
 window.addReelUrl = function() { addReelRow('', document.getElementById('reels-manager').children.length); };
 window.removeReelRow = function(btn) {
   btn.parentElement.remove();
-  document.querySelectorAll('#reels-manager .url-row').forEach(function(r, i) { r.querySelector('.url-label').textContent = 'Short ' + (i+1); });
+  document.querySelectorAll('#reels-manager .url-row').forEach(function(r, i) { r.querySelector('.url-label').textContent = 'Post ' + (i+1); });
 };
 
 // ============================================================
-//  SAVE FUNCTIONS — salva no GitHub e aplica na página
+//  SAVE FUNCTIONS — grava em localStorage e aplica na página
 // ============================================================
 function showFb(id, ok) {
   var el = document.getElementById(id);
   if (!el) return;
-  el.textContent = ok ? '✓ Salvo com sucesso!' : '⚠ Erro ao salvar. Verifique o token GitHub.';
+  el.textContent = ok ? '✓ Salvo com sucesso!' : '⚠ Erro ao salvar.';
   el.style.color = ok ? '#4CAF50' : '#ff6666';
   el.classList.add('show');
-  setTimeout(function() { el.classList.remove('show'); }, 4000);
+  setTimeout(function() { el.classList.remove('show'); }, 3000);
 }
 function setBtn(id, loading) {
   var el = document.getElementById(id);
   if (!el) return;
   el.disabled = loading;
-  el.textContent = loading ? 'Salvando no GitHub...' : 'Salvar';
+  el.textContent = loading ? 'Salvando...' : 'Salvar';
 }
 
-// ── Helper: salva chave no estado + GitHub ───────────────────
-async function saveKeyToGitHub(key, value, btnId, fbId) {
-  setBtn(btnId, true);
-  setGhData(key, value);
-  lsSet(key, value); // cache local
-  var fullData = {};
-  ['content','heroVideo','ledVideo','reels','photos'].forEach(function(k) {
-    fullData[k] = getGhData(k);
-  });
-  var ok = await ghSave(fullData);
-  setBtn(btnId, false);
-  showFb(fbId, ok);
-  return ok;
-}
-
-window.saveHeroVideo = async function() {
+window.saveHeroVideo = function() {
+  setBtn('btn-save-video', true);
   var v = { id: document.getElementById('hero-video-id').value.trim(), label: document.getElementById('hero-video-label').value.trim() };
-  var ok = await saveKeyToGitHub('heroVideo', v, 'btn-save-video', 'fb-video');
-  if (ok) applyVideo(v, 'hero');
+  lsSet('heroVideo', v);
+  applyVideo(v, 'hero');
+  setBtn('btn-save-video', false);
+  showFb('fb-video', true);
 };
 
-window.saveLedVideo = async function() {
+window.saveLedVideo = function() {
+  setBtn('btn-save-ledvideo', true);
   var v = { id: document.getElementById('led-video-id').value.trim(), label: document.getElementById('led-video-label-input').value.trim() };
-  var ok = await saveKeyToGitHub('ledVideo', v, 'btn-save-ledvideo', 'fb-ledvideo');
-  if (ok) applyVideo(v, 'led');
+  lsSet('ledVideo', v);
+  applyVideo(v, 'led');
+  setBtn('btn-save-ledvideo', false);
+  showFb('fb-ledvideo', true);
 };
 
-window.saveReels = async function() {
+window.saveReels = function() {
+  setBtn('btn-save-reels', true);
   var urls = Array.from(document.querySelectorAll('#reels-manager .url-row')).map(function(r) { return r.querySelector('input').value.trim(); });
-  var ok = await saveKeyToGitHub('reels', urls, 'btn-save-reels', 'fb-reels');
-  if (ok) { try { renderReels(urls); } catch(e) { console.error('renderReels após save:', e); } }
+  lsSet('reels', urls);
+  renderReels(urls);
+  setBtn('btn-save-reels', false);
+  showFb('fb-reels', true);
 };
 
-window.saveContent = async function(section) {
+window.saveContent = function(section) {
   setBtn('btn-save-' + section, true);
-  var c = getGhData('content');
+  var c = getData('content');
   if (section === 'hero') {
     c.heroTitle    = document.getElementById('ct-hero-title').value;
     c.heroOrange   = document.getElementById('ct-hero-orange').value;
@@ -3208,8 +2931,10 @@ window.saveContent = async function(section) {
     c.liLink = document.getElementById('ct-li-link').value;
     c.ytLink = document.getElementById('ct-yt-link').value;
   }
-  var ok = await saveKeyToGitHub('content', c, 'btn-save-' + section, 'fb-' + section);
-  if (ok) applyContent(c);
+  lsSet('content', c);
+  applyContent(c);
+  setBtn('btn-save-' + section, false);
+  showFb('fb-' + section, true);
 };
 
 window.changeCredentials = function() {
@@ -3222,47 +2947,9 @@ window.changeCredentials = function() {
   if (cur !== creds.pass) { fb.textContent = '✗ Senha atual incorreta.'; fb.style.color = '#ff6666'; fb.style.display = 'block'; return; }
   if (newP && newP !== conf) { fb.textContent = '✗ Senhas não coincidem.'; fb.style.color = '#ff6666'; fb.style.display = 'block'; return; }
   lsSet('credentials', { user: newU || creds.user, pass: newP || creds.pass });
-  fb.textContent = '✓ Credenciais atualizadas! (salvas localmente por segurança)'; fb.style.color = '#4CAF50'; fb.style.display = 'block';
+  fb.textContent = '✓ Credenciais atualizadas!'; fb.style.color = '#4CAF50'; fb.style.display = 'block';
   ['cur-pass','new-pass','conf-pass'].forEach(function(id) { document.getElementById(id).value = ''; });
   setTimeout(function() { fb.style.display = 'none'; }, 3000);
-};
-
-// ── Configuração do Token GitHub ─────────────────────────────
-window.saveGhToken = function() {
-  var t = (document.getElementById('gh-token-input').value || '').trim();
-  if (!t) { alert('Por favor, cole o token do GitHub.'); return; }
-  setGhToken(t);
-  document.getElementById('gh-token-input').value = '';
-  document.getElementById('gh-token-input').placeholder = '••••••••••••••••••••••••••••••••••••••••';
-  checkGhTokenStatus();
-  var fb = document.getElementById('gh-token-feedback');
-  if (fb) { fb.textContent = '✓ Token salvo! Agora você pode salvar conteúdo.'; fb.style.color = '#4CAF50'; fb.style.display = 'block'; setTimeout(function(){ fb.style.display='none'; }, 4000); }
-};
-
-window.removeGhToken = function() {
-  if (!confirm('Remover o token? Você não conseguirá salvar conteúdo até configurar um novo.')) return;
-  localStorage.removeItem('pen_gh_token');
-  document.getElementById('gh-token-input').placeholder = 'Cole seu token aqui...';
-  checkGhTokenStatus();
-};
-
-window.testGhToken = async function() {
-  var token = getGhToken();
-  var fb = document.getElementById('gh-token-feedback');
-  if (!token) { if(fb){fb.textContent='⚠ Nenhum token configurado.';fb.style.color='#ff6666';fb.style.display='block';} return; }
-  if(fb){fb.textContent='Testando conexão...';fb.style.color='var(--gray)';fb.style.display='block';}
-  try {
-    var res = await fetch('https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO, {
-      headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'}
-    });
-    if (res.ok) {
-      if(fb){fb.textContent='✓ Token válido! Repositório acessado com sucesso.';fb.style.color='#4CAF50';}
-    } else {
-      if(fb){fb.textContent='✗ Token inválido ou sem permissão. Status: '+res.status;fb.style.color='#ff6666';}
-    }
-  } catch(e) {
-    if(fb){fb.textContent='✗ Erro de conexão.';fb.style.color='#ff6666';}
-  }
 };
 
 // ============================================================
@@ -3290,14 +2977,11 @@ window.submitForm = function() {
     data:    new Date().toLocaleString('pt-BR')
   };
 
-  // Salva no GitHub (acumulando) — com fallback local se GitHub falhar
-  appendLeadToGitHub(lead).then(function(ok) {
-    if (!ok) console.warn('Lead salvo só localmente — GitHub indisponível ou token ausente');
-    updateMsgBadge();
-  }).catch(function(e) {
-    console.error('appendLeadToGitHub erro:', e);
-    updateMsgBadge();
-  });
+  // Save to localStorage
+  var submissions = JSON.parse(localStorage.getItem('pen_submissions') || '[]');
+  submissions.unshift(lead); // newest first
+  localStorage.setItem('pen_submissions', JSON.stringify(submissions));
+  updateMsgBadge();
 
   // Reset form
   ['form-name','form-phone','form-email','form-company','form-sector'].forEach(function(id) {
@@ -3309,7 +2993,7 @@ window.submitForm = function() {
   showObrigado({ email: email, phone: phone, servico: service });
 
   // WhatsApp redirect
-  var c = getGhData('content');
+  var c = getData('content');
   var waNum = c.phone || '';
   if (waNum) {
     var txt = 'Olá! Recebi um novo contato pelo site:%0A'
@@ -3348,88 +3032,12 @@ window.clearMsgDates = function() {
   if (dt) dt.value = '';
   renderMsgs();
 };
-// ── Leads: lê do cache local (atualizado pelo GitHub) ─────────
 function getMsgs() {
-  try { return JSON.parse(localStorage.getItem('pen_leads_cache') || '[]'); } catch { return []; }
-}
-
-// ── Carrega leads do GitHub (leads.json separado) ─────────────
-async function loadLeadsFromGitHub() {
-  try {
-    var url = 'https://raw.githubusercontent.com/Thiago-Peninha/peninhamkt-site/main/leads.json?_=' + Date.now();
-    var res = await fetch(url);
-    if (!res.ok) return getMsgs();
-    var data = await res.json();
-    var arr = Array.isArray(data) ? data : [];
-    localStorage.setItem('pen_leads_cache', JSON.stringify(arr));
-    return arr;
-  } catch(e) {
-    console.warn('loadLeadsFromGitHub: usando cache local', e);
-    return getMsgs();
-  }
-}
-
-// ── Adiciona 1 lead no GitHub — ACUMULA, nunca sobrescreve ───
-async function appendLeadToGitHub(lead) {
-  var token = getGhToken();
-  if (!token) {
-    var local = getMsgs(); local.unshift(lead);
-    localStorage.setItem('pen_leads_cache', JSON.stringify(local));
-    console.warn('Token ausente — lead salvo só localmente');
-    return false;
-  }
-  try {
-    var ghUrl = 'https://api.github.com/repos/Thiago-Peninha/peninhamkt-site/contents/leads.json';
-    var getRes = await fetch(ghUrl + '?ref=main', {
-      headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
-    });
-    var currentLeads = [], sha = '';
-    if (getRes.ok) {
-      var meta = await getRes.json(); sha = meta.sha || '';
-      try { currentLeads = JSON.parse(atob(meta.content.replace(/
-/g, ''))); } catch(e) { currentLeads = []; }
-    }
-    currentLeads.unshift(lead); // novo lead no topo
-    var body = {
-      message: 'Lead: ' + (lead.nome||'') + ' — ' + (lead.data||''),
-      content: btoa(unescape(encodeURIComponent(JSON.stringify(currentLeads, null, 2)))),
-      branch: 'main'
-    };
-    if (sha) body.sha = sha;
-    var putRes = await fetch(ghUrl, {
-      method: 'PUT',
-      headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    localStorage.setItem('pen_leads_cache', JSON.stringify(currentLeads));
-    return putRes.ok;
-  } catch(e) {
-    console.error('appendLeadToGitHub:', e);
-    var local = getMsgs(); local.unshift(lead);
-    localStorage.setItem('pen_leads_cache', JSON.stringify(local));
-    return false;
-  }
-}
-
-// ── Persiste alterações (lido/apagado) no GitHub ─────────────
-async function saveMsgsToGitHub(arr) {
-  var token = getGhToken();
-  localStorage.setItem('pen_leads_cache', JSON.stringify(arr));
-  if (!token) return;
-  try {
-    var ghUrl = 'https://api.github.com/repos/Thiago-Peninha/peninhamkt-site/contents/leads.json';
-    var getRes = await fetch(ghUrl + '?ref=main', { headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' } });
-    var sha = '';
-    if (getRes.ok) { var meta = await getRes.json(); sha = meta.sha || ''; }
-    var body = { message: 'Leads: atualização', content: btoa(unescape(encodeURIComponent(JSON.stringify(arr, null, 2)))), branch: 'main' };
-    if (sha) body.sha = sha;
-    await fetch(ghUrl, { method: 'PUT', headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-  } catch(e) { console.error('saveMsgsToGitHub:', e); }
+  try { return JSON.parse(localStorage.getItem('pen_submissions') || '[]'); } catch { return []; }
 }
 
 function saveMsgs(arr) {
-  localStorage.setItem('pen_leads_cache', JSON.stringify(arr));
-  saveMsgsToGitHub(arr);
+  localStorage.setItem('pen_submissions', JSON.stringify(arr));
 }
 
 function updateMsgBadge() {
@@ -3489,7 +3097,7 @@ function renderMsgs() {
     card.className = 'msg-card';
     card.id = 'msg-card-' + m.id;
 
-    var waNum   = (getGhData('content').phone || '').replace(/\D/g, '');
+    var waNum   = (getData('content').phone || '').replace(/\D/g, '');
     var waText  = 'Olá ' + (m.nome||'') + ', vi seu contato pelo site da Peninha Produções! Como posso te ajudar?';
     var waHref  = waNum ? ('https://wa.me/' + (m.telefone||'').replace(/\D/g,'') + '?text=' + encodeURIComponent(waText)) : '';
 
@@ -3527,28 +3135,20 @@ function renderMsgs() {
   if (window.lucide) lucide.createIcons();
 }
 
-window.reloadLeadsFromGH = function() {
-  var msgList = document.getElementById('msgs-list');
-  if (msgList) msgList.innerHTML = '<div style="text-align:center;padding:40px;color:var(--gray);font-size:13px">🔄 Buscando leads no GitHub...</div>';
-  loadLeadsFromGitHub().then(function() {
-    renderMsgs();
-    updateMsgBadge();
-  });
-};
-
 window.toggleMsg = function(id) {
   var card = document.getElementById('msg-card-' + id);
   if (!card) return;
   var isOpen = card.classList.contains('open');
-  // Marca como lido e persiste no GitHub
+  // Mark as read
   var msgs = getMsgs();
   msgs = msgs.map(function(m) {
     if (m.id === id) m.novo = false;
     return m;
   });
-  saveMsgs(msgs); // salva local + GitHub
+  saveMsgs(msgs);
   updateMsgBadge();
   card.classList.toggle('open', !isOpen);
+  // Remove new dot
   var dot = card.querySelector('.msg-new-dot');
   if (dot) dot.remove();
 };
@@ -3556,14 +3156,14 @@ window.toggleMsg = function(id) {
 window.deleteMsg = function(id) {
   if (!confirm('Apagar esta mensagem?')) return;
   var msgs = getMsgs().filter(function(m) { return m.id !== id; });
-  saveMsgs(msgs); // salva local + GitHub
+  saveMsgs(msgs);
   renderMsgs();
   updateMsgBadge();
 };
 
 window.clearAllMsgs = function() {
-  if (!confirm('Apagar TODOS os leads? Esta ação não pode ser desfeita.')) return;
-  saveMsgs([]); // salva local + GitHub
+  if (!confirm('Apagar TODAS as mensagens? Esta ação não pode ser desfeita.')) return;
+  saveMsgs([]);
   renderMsgs();
   updateMsgBadge();
 };
@@ -3666,7 +3266,7 @@ var PHOTO_PLACEHOLDERS = [
 function renderAgencyPhotos(photos) {
   var grid = document.getElementById('agency-photos-grid');
   if (!grid) return;
-  var list = Array.isArray(photos) ? photos : getGhData('photos');
+  var list = Array.isArray(photos) ? photos : getData('photos');
   grid.innerHTML = '';
   list.forEach(function(p, i) {
     var ph = PHOTO_PLACEHOLDERS[i] || { icon: 'image', label: 'Foto ' + (i+1) };
@@ -3695,7 +3295,7 @@ function renderAgencyPhotos(photos) {
 function buildPhotoManager(photos) {
   var grid = document.getElementById('photo-manager-grid');
   if (!grid) return;
-  var list = Array.isArray(photos) ? photos : getGhData('photos');
+  var list = Array.isArray(photos) ? photos : getData('photos');
   grid.innerHTML = '';
 
   list.forEach(function(p, i) {
@@ -3761,10 +3361,10 @@ window.removePhoto = function(idx) {
 };
 
 // ── Save all 4 photos to localStorage + re-render grid ────────────────────
-window.saveAllPhotos = async function() {
+window.saveAllPhotos = function() {
   var btn = document.getElementById('btn-save-fotos');
   btn.disabled = true;
-  btn.textContent = 'Salvando no GitHub...';
+  btn.textContent = 'Salvando...';
 
   var photos = [];
   for (var i = 0; i < 4; i++) {
@@ -3775,25 +3375,14 @@ window.saveAllPhotos = async function() {
       caption: caption ? caption.value : ''
     });
   }
-
-  var ok = await saveKeyToGitHub('photos', photos, 'btn-save-fotos', 'fb-fotos');
-  if (ok) renderAgencyPhotos(photos);
+  lsSet('photos', photos);
+  renderAgencyPhotos(photos);
 
   btn.disabled = false;
   btn.textContent = '💾 Salvar Todas as Fotos';
-  showFb('fb-fotos', ok);
+  showFb('fb-fotos', true);
 };
 
 </script>
-
-<script>
-// Configurações iniciais pré-definidas
-(function() {
-  if (!localStorage.getItem('pen_gh_token')) {
-    localStorage.setItem('pen_gh_token', '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');
-  }
-})();
-</script>
-
 </body>
 </html>
