@@ -586,7 +586,8 @@ var GH_LEADS  = 'leads.json';
 var GH_CONTENT = 'content.json';
 
 function getGhToken() {
-  try { return localStorage.getItem('pen_gh_token') || ''; } catch { return ''; }
+  // Token embutido diretamente — não depende de localStorage
+  return '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';
 }
 
 // ════════════════════════════════════════════════════════════
