@@ -2325,7 +2325,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <input type="date" id="msg-date-to" class="msg-filter-select" style="padding:6px 10px;cursor:pointer" onchange="renderMsgs()">
             <button class="btn-filter" onclick="clearMsgDates()" style="padding:6px 12px;font-size:11px">Limpar datas</button>
           </div>
-          <button class="btn-export-msgs" onclick="exportMsgsCSV()">Exportar CSV</button>
+          <button class="btn-export-msgs" onclick="reloadLeadsFromGH()" style="background:rgba(255,85,0,0.12);color:var(--orange);border-color:rgba(255,85,0,0.3)">🔄 Sincronizar</button>
+          <button class="btn-export-msgs" onclick="exportMsgsCSV()">⬇ Exportar CSV</button>
           <button class="btn-clear-msgs" onclick="clearAllMsgs()">Apagar Tudo</button>
         </div>
         <div id="msgs-list">
@@ -3030,8 +3031,14 @@ window.doLogin = function() {
     document.getElementById('admin-user').value = '';
     document.getElementById('admin-pass').value = '';
     loadAdminFields();
-    renderMsgs();
     updateMsgBadge();
+    // Sincroniza leads do GitHub antes de exibir
+    var msgList = document.getElementById('msgs-list');
+    if (msgList) msgList.innerHTML = '<div style="text-align:center;padding:40px;color:var(--gray);font-size:13px;letter-spacing:1px">🔄 Buscando leads do GitHub...</div>';
+    syncLeadsFromGitHub().then(function() {
+      renderMsgs();
+      updateMsgBadge();
+    });
     // Atualiza ponto de status do token
     var dot = document.getElementById('gh-token-dot');
     if (dot) dot.style.background = getGhToken() ? '#4CAF50' : '#ff6666';
@@ -3317,6 +3324,101 @@ window.submitForm = function() {
 // ============================================================
 
 
+
+// ════════════════════════════════════════════════════════════
+//  LEADS — SINCRONIZAÇÃO COM GITHUB
+// ════════════════════════════════════════════════════════════
+
+var GH_LEADS_FILE = 'leads.json';
+
+// Lê leads.json público do GitHub (sem token)
+async function ghLoadLeads() {
+  try {
+    var url = 'https://raw.githubusercontent.com/' + GH_OWNER + '/' + GH_REPO + '/' + GH_BRANCH + '/' + GH_LEADS_FILE + '?_=' + Date.now();
+    var res = await fetch(url);
+    if (!res.ok) return [];
+    var data = await res.json();
+    return Array.isArray(data) ? data : [];
+  } catch(e) {
+    console.warn('ghLoadLeads:', e);
+    return [];
+  }
+}
+
+// Salva leads.json de volta no GitHub (requer token)
+async function ghSaveLeads(leadsArr) {
+  var token = getGhToken();
+  if (!token) return false;
+  try {
+    var ghUrl = 'https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + GH_LEADS_FILE;
+    var getRes = await fetch(ghUrl + '?ref=' + GH_BRANCH, {
+      headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    var sha = '';
+    if (getRes.ok) { var m = await getRes.json(); sha = m.sha || ''; }
+    var body = {
+      message: 'Admin: leads atualizados',
+      content: btoa(unescape(encodeURIComponent(JSON.stringify(leadsArr, null, 2)))),
+      branch: GH_BRANCH
+    };
+    if (sha) body.sha = sha;
+    var putRes = await fetch(ghUrl, {
+      method: 'PUT',
+      headers: {
+        'Authorization': 'token ' + token,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+    return putRes.ok;
+  } catch(e) {
+    console.error('ghSaveLeads:', e);
+    return false;
+  }
+}
+
+// Expira leads com mais de 90 dias
+function expireOldLeads(leads) {
+  var cutoff = Date.now() - (90 * 24 * 60 * 60 * 1000);
+  return leads.filter(function(l) {
+    // usa o id como timestamp (Date.now() no momento do cadastro)
+    return !l.id || l.id > cutoff;
+  });
+}
+
+// Carrega leads do GitHub, mescla com local, expira antigos, salva local
+async function syncLeadsFromGitHub() {
+  var ghLeads  = await ghLoadLeads();
+  var local    = getMsgs();
+
+  // Mescla: une os dois arrays e remove duplicatas pelo id
+  var all = ghLeads.slice();
+  local.forEach(function(l) {
+    if (!all.find(function(a) { return a.id === l.id; })) all.unshift(l);
+  });
+
+  // Expira leads > 90 dias
+  all = expireOldLeads(all);
+
+  // Ordena do mais recente ao mais antigo
+  all.sort(function(a, b) { return (b.id || 0) - (a.id || 0); });
+
+  // Salva no localStorage
+  saveMsgs(all);
+  return all;
+}
+
+// Recarrega leads do GitHub e re-renderiza
+window.reloadLeadsFromGH = async function() {
+  var btn = document.querySelector('[onclick="reloadLeadsFromGH()"]');
+  if (btn) { btn.disabled = true; btn.textContent = '🔄 Buscando...'; }
+  await syncLeadsFromGitHub();
+  renderMsgs();
+  updateMsgBadge();
+  if (btn) { btn.disabled = false; btn.textContent = '🔄 Sincronizar'; }
+};
+
 function parseMsgDate(str) {
   if (!str) return null;
   // Format: "DD/MM/YYYY, HH:MM:SS" (pt-BR toLocaleString)
@@ -3463,11 +3565,15 @@ window.deleteMsg = function(id) {
   updateMsgBadge();
 };
 
-window.clearAllMsgs = function() {
+window.clearAllMsgs = async function() {
   if (!confirm('Apagar TODAS as mensagens? Esta ação não pode ser desfeita.')) return;
   saveMsgs([]);
   renderMsgs();
   updateMsgBadge();
+  // Apaga também do GitHub para sincronizar todos os dispositivos
+  var ok = await ghSaveLeads([]);
+  if (ok) console.log('leads.json limpo no GitHub');
+  else console.warn('Falha ao limpar leads.json no GitHub (verifique o token)');
 };
 
 window.exportMsgsCSV = function() {
