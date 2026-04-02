@@ -3309,7 +3309,7 @@ window.testGhToken = async function() {
 var SHEETS_SCRIPT_URL = 'COLE_AQUI_A_URL_DO_SEU_APPS_SCRIPT';
 
 async function sendToGoogleSheets(lead) {
-  if (!SHEETS_SCRIPT_URL || SHEETS_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbxc1QhhvvG0JUlZG5ceTLUFGwV8EfOft7BNsERLz5HdwylpwcX5d36XmtaO8UD2UyHxvw/exec') {
+  if (!SHEETS_SCRIPT_URL || SHEETS_SCRIPT_URL === 'COLE_AQUI_A_URL_DO_SEU_APPS_SCRIPT') {
     console.warn('Google Sheets: URL não configurada.');
     return false;
   }
@@ -3368,62 +3368,6 @@ window.submitForm = function() {
   showObrigado({ email: email, phone: phone, servico: service });
 
   // 5. Notificação WhatsApp (se número configurado)
-  var c = getGhData('content');
-  var waNum = c.phone || '';
-  if (waNum) {
-    var txt = 'Olá! Recebi um novo contato pelo site:%0A'
-      + '*Nome:* ' + name + '%0A'
-      + (phone   ? '*Telefone:* ' + phone   + '%0A' : '')
-      + '*E-mail:* ' + email + '%0A'
-      + (company ? '*Empresa:* '  + company + '%0A' : '')
-      + (sector  ? '*Ramo:* '     + sector  + '%0A' : '')
-      + (service ? '*Serviço:* '  + service + '%0A' : '');
-    setTimeout(function() {
-      window.open('https://wa.me/' + waNum + '?text=' + txt, '_blank');
-    }, 600);
-  }
-};
-
-
-// ============================================================
-window.submitForm = function() {
-  var name    = document.getElementById('form-name').value.trim();
-  var email   = document.getElementById('form-email').value.trim();
-  var phone   = document.getElementById('form-phone').value.trim();
-  var company = document.getElementById('form-company').value.trim();
-  var sector  = document.getElementById('form-sector').value.trim();
-  var service = document.getElementById('form-service').value;
-  if (!name)  { alert('Por favor, informe seu nome.');   return; }
-  if (!email) { alert('Por favor, informe seu e-mail.'); return; }
-
-  var lead = {
-    id:      Date.now(),
-    novo:    true,
-    nome:    name,
-    email:   email,
-    telefone: phone,
-    empresa: company,
-    ramo:    sector,
-    servico: service,
-    data:    new Date().toLocaleString('pt-BR')
-  };
-
-  // Save to localStorage
-  var submissions = JSON.parse(localStorage.getItem('pen_submissions') || '[]');
-  submissions.unshift(lead); // newest first
-  localStorage.setItem('pen_submissions', JSON.stringify(submissions));
-  updateMsgBadge();
-
-  // Reset form
-  ['form-name','form-phone','form-email','form-company','form-sector'].forEach(function(id) {
-    document.getElementById(id).value = '';
-  });
-  document.getElementById('form-service').value = '';
-
-  // Show thank-you page
-  showObrigado({ email: email, phone: phone, servico: service });
-
-  // WhatsApp redirect
   var c = getGhData('content');
   var waNum = c.phone || '';
   if (waNum) {
