@@ -621,93 +621,6 @@ src="https://www.facebook.com/tr?id=906561028810787&ev=PageView&noscript=1"
 
   .reel-item:hover .reel-overlay { opacity: 1; }
 
-  /* Card Instagram estético */
-  .ig-card {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    background: linear-gradient(160deg, #1a1a1a 0%, #0f0f0f 100%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 14px;
-    text-decoration: none;
-    transition: all 0.35s;
-    border: 1px solid rgba(255,85,0,0.1);
-  }
-
-  .ig-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(160deg, rgba(255,85,0,0.06) 0%, transparent 60%);
-    opacity: 0;
-    transition: opacity 0.35s;
-  }
-
-  .reel-item:hover .ig-card::before { opacity: 1; }
-
-  .ig-card-logo {
-    width: 52px;
-    height: 52px;
-    border-radius: 14px;
-    background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 6px 24px rgba(220,39,67,0.35);
-    transition: transform 0.35s, box-shadow 0.35s;
-  }
-
-  .reel-item:hover .ig-card-logo {
-    transform: scale(1.1);
-    box-shadow: 0 10px 32px rgba(220,39,67,0.5);
-  }
-
-  .ig-card-logo svg {
-    width: 28px;
-    height: 28px;
-    fill: none;
-    stroke: #fff;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  .ig-card-label {
-    font-size: 10px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--gray);
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 600;
-    transition: color 0.35s;
-  }
-
-  .reel-item:hover .ig-card-label { color: var(--white-dim); }
-
-  .ig-card-cta {
-    position: absolute;
-    bottom: 16px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--orange);
-    color: #000;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 6px 16px;
-    white-space: nowrap;
-    opacity: 0;
-    transition: opacity 0.35s;
-    clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
-  }
-
-  .reel-item:hover .ig-card-cta { opacity: 1; }
-
   /* ===== SERVIÇOS ===== */
   #servicos {
     background: var(--black);
@@ -3064,26 +2977,16 @@ function renderReels(reels) {
           wrap.appendChild(iframe);
 
         } else if (media && media.type === 'instagram') {
-          // ── Instagram: card estético com link direto ──
-          // (embed nativo tem barras feias e carregamento lento)
-          var postUrl = 'https://www.instagram.com/p/' + media.id + '/';
-          var igCard = document.createElement('a');
-          igCard.href = postUrl;
-          igCard.target = '_blank';
-          igCard.rel = 'noopener noreferrer';
-          igCard.className = 'ig-card';
-          igCard.setAttribute('aria-label', 'Ver publicação no Instagram');
-          igCard.innerHTML =
-            '<div class="ig-card-logo">' +
-              '<svg viewBox="0 0 24 24">' +
-                '<rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>' +
-                '<path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>' +
-                '<line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>' +
-              '</svg>' +
-            '</div>' +
-            '<span class="ig-card-label">Ver no Instagram</span>' +
-            '<span class="ig-card-cta">Abrir ↗</span>';
-          wrap.appendChild(igCard);
+          // ── Instagram: embed via iframe ──
+          var igFrame = document.createElement('iframe');
+          igFrame.src = 'https://www.instagram.com/p/' + media.id + '/embed/';
+          igFrame.setAttribute('allowfullscreen', '');
+          igFrame.setAttribute('loading', 'lazy');
+          igFrame.setAttribute('scrolling', 'no');
+          igFrame.setAttribute('frameborder', '0');
+          igFrame.style.cssText = 'width:100%;height:100%;border:none;background:#000';
+          igFrame.title = 'Instagram';
+          wrap.appendChild(igFrame);
 
         } else {
           // URL não reconhecida
@@ -3403,7 +3306,7 @@ window.testGhToken = async function() {
 // ============================================================
 
 // ─── Configure sua URL do Google Apps Script ───────────────
-var SHEETS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxc1QhhvvG0JUlZG5ceTLUFGwV8EfOft7BNsERLz5HdwylpwcX5d36XmtaO8UD2UyHxvw/exec';
+var SHEETS_SCRIPT_URL = 'COLE_AQUI_A_URL_DO_SEU_APPS_SCRIPT';
 
 async function sendToGoogleSheets(lead) {
   if (!SHEETS_SCRIPT_URL || SHEETS_SCRIPT_URL === 'COLE_AQUI_A_URL_DO_SEU_APPS_SCRIPT') {
