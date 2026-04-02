@@ -621,6 +621,93 @@ src="https://www.facebook.com/tr?id=906561028810787&ev=PageView&noscript=1"
 
   .reel-item:hover .reel-overlay { opacity: 1; }
 
+  /* Card Instagram estético */
+  .ig-card {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: linear-gradient(160deg, #1a1a1a 0%, #0f0f0f 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    text-decoration: none;
+    transition: all 0.35s;
+    border: 1px solid rgba(255,85,0,0.1);
+  }
+
+  .ig-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, rgba(255,85,0,0.06) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.35s;
+  }
+
+  .reel-item:hover .ig-card::before { opacity: 1; }
+
+  .ig-card-logo {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 24px rgba(220,39,67,0.35);
+    transition: transform 0.35s, box-shadow 0.35s;
+  }
+
+  .reel-item:hover .ig-card-logo {
+    transform: scale(1.1);
+    box-shadow: 0 10px 32px rgba(220,39,67,0.5);
+  }
+
+  .ig-card-logo svg {
+    width: 28px;
+    height: 28px;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .ig-card-label {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gray);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    transition: color 0.35s;
+  }
+
+  .reel-item:hover .ig-card-label { color: var(--white-dim); }
+
+  .ig-card-cta {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--orange);
+    color: #000;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.35s;
+    clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+  }
+
+  .reel-item:hover .ig-card-cta { opacity: 1; }
+
   /* ===== SERVIÇOS ===== */
   #servicos {
     background: var(--black);
@@ -2102,14 +2189,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
       <div class="contact-item" style="flex-direction:column;align-items:flex-start;gap:12px">
         <div style="display:flex;align-items:center;gap:15px">
-          <div class="contact-icon">📍</div>
+          <div class="contact-icon"><i data-lucide="map-pin" style="width:20px;height:20px;stroke:var(--orange);stroke-width:2;fill:none;flex-shrink:0;vertical-align:middle"></i></div>
           <div class="contact-item-text">
             <strong>Localização</strong>
             R. Trinta e Três, 18 - Vila Santa Cecília<br>Volta Redonda - RJ, 27260-010
           </div>
         </div>
         <div style="width:100%;border:1px solid rgba(255,85,0,0.25);overflow:hidden;border-radius:2px;position:relative">
-          <a href="https://maps.app.goo.gl/iifAP6XBD5vPpQBW9" target="_blank" 
+          <a href="https://maps.app.goo.gl/iifAP6XBD5vPpQBW9" target="_blank"
              style="position:absolute;bottom:8px;right:8px;z-index:10;background:var(--orange);color:#000;font-size:10px;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:5px 10px;text-decoration:none;border-radius:2px">
             Abrir no Maps ↗
           </a>
@@ -2123,7 +2210,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
 
       <div class="contact-item" id="contact-phone-wrap" style="display:none">
-        <div class="contact-icon">📱</div>
+        <div class="contact-icon"><i data-lucide="message-circle" style="width:20px;height:20px;stroke:var(--orange);stroke-width:2;fill:none;flex-shrink:0;vertical-align:middle"></i></div>
         <div class="contact-item-text">
           <strong>WhatsApp</strong>
           <span id="contact-phone-el"></span>
@@ -2131,7 +2218,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
 
       <div class="contact-item" id="contact-ig-wrap" style="display:none">
-        <div class="contact-icon">📸</div>
+        <div class="contact-icon"><i data-lucide="instagram" style="width:20px;height:20px;stroke:var(--orange);stroke-width:2;fill:none;flex-shrink:0;vertical-align:middle"></i></div>
         <div class="contact-item-text">
           <strong>Instagram</strong>
           <span id="contact-ig-el"></span>
@@ -2141,7 +2228,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
 
     <div class="contact-form">
-      <div class="form-title">ENVIE UMA MENSAGEM</div>
+      <div class="form-title">O PRIMEIRO PASSO DO SEU PROJETO COMEÇA AQUI</div>
+      <p style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);font-weight:600;margin-bottom:20px;margin-top:-10px">Envie uma mensagem</p>
       <div class="form-row">
         <div class="form-group">
           <label>Nome</label>
@@ -2156,21 +2244,27 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <label>E-mail</label>
         <input type="email" id="form-email" placeholder="seu@email.com">
       </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nome da Empresa</label>
+          <input type="text" id="form-company" placeholder="Nome da sua empresa">
+        </div>
+        <div class="form-group">
+          <label>Ramo de Atuação</label>
+          <input type="text" id="form-sector" placeholder="Ex: Clínica, Restaurante...">
+        </div>
+      </div>
       <div class="form-group">
         <label>Serviço de interesse</label>
         <select id="form-service">
           <option value="">Selecione um serviço</option>
-          <option>Marketing Digital Completo</option>
+          <option>Pacote de Marketing Completo</option>
           <option>Produção Audiovisual</option>
           <option>Gestão de Tráfego Pago</option>
           <option>Painéis LED</option>
-          <option>Pacote Completo</option>
         </select>
       </div>
-      <div class="form-group">
-        <label>Mensagem</label>
-        <textarea id="form-msg" placeholder="Conte-nos sobre sua empresa e objetivos..."></textarea>
-      </div>
+
       <button class="form-submit" onclick="submitForm()">Enviar Mensagem ➤</button>
       <div class="form-success" id="form-success">
         ✅ Mensagem enviada!<br>
@@ -2970,20 +3064,26 @@ function renderReels(reels) {
           wrap.appendChild(iframe);
 
         } else if (media && media.type === 'instagram') {
-          // ── Instagram: embed oficial via blockquote ──
-          // O embed do Instagram usa um blockquote + script; montamos um mini-HTML
-          // dentro de um iframe srcdoc para isolar o contexto
+          // ── Instagram: card estético com link direto ──
+          // (embed nativo tem barras feias e carregamento lento)
           var postUrl = 'https://www.instagram.com/p/' + media.id + '/';
-          // Usamos iframe apontando para o embed público do Instagram
-          var igFrame = document.createElement('iframe');
-          igFrame.src = 'https://www.instagram.com/p/' + media.id + '/embed/';
-          igFrame.setAttribute('allowfullscreen', '');
-          igFrame.setAttribute('loading', 'lazy');
-          igFrame.setAttribute('scrolling', 'no');
-          igFrame.setAttribute('frameborder', '0');
-          igFrame.style.cssText = 'width:100%;height:100%;border:none;background:#000';
-          igFrame.title = 'Instagram';
-          wrap.appendChild(igFrame);
+          var igCard = document.createElement('a');
+          igCard.href = postUrl;
+          igCard.target = '_blank';
+          igCard.rel = 'noopener noreferrer';
+          igCard.className = 'ig-card';
+          igCard.setAttribute('aria-label', 'Ver publicação no Instagram');
+          igCard.innerHTML =
+            '<div class="ig-card-logo">' +
+              '<svg viewBox="0 0 24 24">' +
+                '<rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>' +
+                '<path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>' +
+                '<line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>' +
+              '</svg>' +
+            '</div>' +
+            '<span class="ig-card-label">Ver no Instagram</span>' +
+            '<span class="ig-card-cta">Abrir ↗</span>';
+          wrap.appendChild(igCard);
 
         } else {
           // URL não reconhecida
@@ -3328,9 +3428,9 @@ window.submitForm = function() {
   var name    = document.getElementById('form-name').value.trim();
   var email   = document.getElementById('form-email').value.trim();
   var phone   = document.getElementById('form-phone').value.trim();
+  var company = document.getElementById('form-company').value.trim();
+  var sector  = document.getElementById('form-sector').value.trim();
   var service = document.getElementById('form-service').value;
-  var msg     = (document.getElementById('form-msg') ? document.getElementById('form-msg').value.trim() : '');
-
   if (!name)  { alert('Por favor, informe seu nome.');   return; }
   if (!email) { alert('Por favor, informe seu e-mail.'); return; }
 
@@ -3340,30 +3440,45 @@ window.submitForm = function() {
     nome:     name,
     email:    email,
     telefone: phone,
+    empresa:  company,
+    ramo:     sector,
     servico:  service,
-    mensagem: msg,
     data:     new Date().toLocaleString('pt-BR')
   };
 
-  // 1. Salva no localStorage (painel admin local)
+  // 1. Salva no localStorage (painel admin)
   var submissions = JSON.parse(localStorage.getItem('pen_submissions') || '[]');
   submissions.unshift(lead);
   localStorage.setItem('pen_submissions', JSON.stringify(submissions));
   updateMsgBadge();
 
-  // 2. Envia para Google Sheets (funciona para qualquer visitante)
+  // 2. Envia para Google Sheets (acesso de qualquer lugar)
   sendToGoogleSheets(lead);
 
   // 3. Limpa o formulário
-  ['form-name','form-phone','form-email'].forEach(function(id) {
-    var el = document.getElementById(id);
-    if (el) el.value = '';
+  ['form-name','form-phone','form-email','form-company','form-sector'].forEach(function(id) {
+    document.getElementById(id).value = '';
   });
   document.getElementById('form-service').value = '';
-  if (document.getElementById('form-msg')) document.getElementById('form-msg').value = '';
 
   // 4. Mostra tela de Obrigado
   showObrigado({ email: email, phone: phone, servico: service });
+
+  // 5. Notificação WhatsApp (se número configurado)
+  var c = getGhData('content');
+  var waNum = c.phone || '';
+  if (waNum) {
+    var txt = 'Olá! Recebi um novo contato pelo site:%0A'
+      + '*Nome:* ' + name + '%0A'
+      + (phone   ? '*Telefone:* ' + phone   + '%0A' : '')
+      + '*E-mail:* ' + email + '%0A'
+      + (company ? '*Empresa:* '  + company + '%0A' : '')
+      + (sector  ? '*Ramo:* '     + sector  + '%0A' : '')
+      + (service ? '*Serviço:* '  + service + '%0A' : '');
+    setTimeout(function() {
+      window.open('https://wa.me/' + waNum + '?text=' + txt, '_blank');
+    }, 600);
+  }
 };
 
 
