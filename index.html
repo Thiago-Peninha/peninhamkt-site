@@ -1916,7 +1916,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       Somos uma produtora completa com mais de 20 profissionais dedicados a impulsionar suas vendas com estratégia, criatividade e tecnologia.
     </p>
     <div class="hero-btns">
-      <a href="cadastro.html" class="btn-primary">Fale Conosco</a>
+      <a href="#contato" class="btn-primary">Fale Conosco</a>
       <a href="#servicos" class="btn-outline">Ver Serviços ↓</a>
     </div>
   </div>
@@ -1990,7 +1990,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <strong style="color:var(--white);display:inline-flex;align-items:center;gap:5px"><i data-lucide="map-pin" style="width:14px;height:14px;stroke:var(--orange);stroke-width:2;fill:none;flex-shrink:0;vertical-align:middle"></i> Aterrado</strong> — +70 mil veículos/dia
         </p>
         <p style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:3px;color:var(--orange);margin-bottom:18px">QUEM NÃO É VISTO, NÃO É LEMBRADO.</p>
-        <a href="cadastro.html" class="btn-primary" style="font-size:13px;padding:10px 24px">Quero anunciar</a>
+        <a href="#contato" class="btn-primary" style="font-size:13px;padding:10px 24px">Quero anunciar</a>
       </div>
       <div style="position:relative">
         <div class="video-frame" style="max-width:100%">
@@ -2092,24 +2092,24 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <!-- CONTATO -->
 <section id="contato">
-  <div style="max-width:50%;min-width:320px">
+  <div class="contact-grid">
     <div class="contact-info">
       <div class="section-tag">Contato</div>
       <h2 class="section-title" id="contact-title-el">E AÍ, BORA<br><span>PRODUZIR?</span></h2>
-      <p id="contact-desc-el" style="color:var(--white-dim);font-size:15px;line-height:1.8;font-weight:300;margin-bottom:32px">
-        Estamos prontos para iniciar imediatamente. Entre em contato pelo WhatsApp ou preencha o formulário e retornaremos o mais breve possível.
+      <p id="contact-desc-el">
+        Estamos prontos para iniciar imediatamente. Entre em contato pelo WhatsApp ou preencha o formulário e retornaremos o mais breve possível para planejarmos os conteúdos e campanhas da sua empresa.
       </p>
 
-      <div class="contact-item" style="flex-direction:column;align-items:flex-start;gap:12px;margin-bottom:24px">
+      <div class="contact-item" style="flex-direction:column;align-items:flex-start;gap:12px">
         <div style="display:flex;align-items:center;gap:15px">
-          <div class="contact-icon"><i data-lucide="map-pin" style="width:20px;height:20px;stroke:var(--orange);stroke-width:2;fill:none;flex-shrink:0;vertical-align:middle"></i></div>
+          <div class="contact-icon">📍</div>
           <div class="contact-item-text">
             <strong>Localização</strong>
             R. Trinta e Três, 18 - Vila Santa Cecília<br>Volta Redonda - RJ, 27260-010
           </div>
         </div>
         <div style="width:100%;border:1px solid rgba(255,85,0,0.25);overflow:hidden;border-radius:2px;position:relative">
-          <a href="https://maps.app.goo.gl/iifAP6XBD5vPpQBW9" target="_blank"
+          <a href="https://maps.app.goo.gl/iifAP6XBD5vPpQBW9" target="_blank" 
              style="position:absolute;bottom:8px;right:8px;z-index:10;background:var(--orange);color:#000;font-size:10px;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:5px 10px;text-decoration:none;border-radius:2px">
             Abrir no Maps ↗
           </a>
@@ -2123,7 +2123,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
 
       <div class="contact-item" id="contact-phone-wrap" style="display:none">
-        <div class="contact-icon"><i data-lucide="message-circle" style="width:20px;height:20px;stroke:var(--orange);stroke-width:2;fill:none;flex-shrink:0;vertical-align:middle"></i></div>
+        <div class="contact-icon">📱</div>
         <div class="contact-item-text">
           <strong>WhatsApp</strong>
           <span id="contact-phone-el"></span>
@@ -2131,19 +2131,56 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
 
       <div class="contact-item" id="contact-ig-wrap" style="display:none">
-        <div class="contact-icon"><i data-lucide="instagram" style="width:20px;height:20px;stroke:var(--orange);stroke-width:2;fill:none;flex-shrink:0;vertical-align:middle"></i></div>
+        <div class="contact-icon">📸</div>
         <div class="contact-item-text">
           <strong>Instagram</strong>
           <span id="contact-ig-el"></span>
         </div>
       </div>
 
-      <a href="cadastro.html" class="btn-primary" style="margin-top:28px;display:inline-flex;align-items:center;gap:10px;text-decoration:none">
-        Fale Conosco ➤
-      </a>
+    </div>
+
+    <div class="contact-form">
+      <div class="form-title">ENVIE UMA MENSAGEM</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nome</label>
+          <input type="text" id="form-name" placeholder="Seu nome">
+        </div>
+        <div class="form-group">
+          <label>Telefone</label>
+          <input type="tel" id="form-phone" placeholder="(00) 00000-0000">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>E-mail</label>
+        <input type="email" id="form-email" placeholder="seu@email.com">
+      </div>
+      <div class="form-group">
+        <label>Serviço de interesse</label>
+        <select id="form-service">
+          <option value="">Selecione um serviço</option>
+          <option>Marketing Digital Completo</option>
+          <option>Produção Audiovisual</option>
+          <option>Gestão de Tráfego Pago</option>
+          <option>Painéis LED</option>
+          <option>Pacote Completo</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Mensagem</label>
+        <textarea id="form-msg" placeholder="Conte-nos sobre sua empresa e objetivos..."></textarea>
+      </div>
+      <button class="form-submit" onclick="submitForm()">Enviar Mensagem ➤</button>
+      <div class="form-success" id="form-success">
+        ✅ Mensagem enviada!<br>
+        <span style="font-size:14px;font-family:'Barlow',sans-serif;color:var(--gray);font-weight:300">Entraremos em contato em breve.</span>
+      </div>
     </div>
   </div>
 </section>
+
+
 
 <!-- FOOTER -->
 <footer>
@@ -3262,7 +3299,74 @@ window.testGhToken = async function() {
 };
 
 // ============================================================
-//  FORMULÁRIO
+//  FORMULÁRIO — envia para Google Sheets e mostra obrigado
+// ============================================================
+
+// ─── Configure sua URL do Google Apps Script ───────────────
+var SHEETS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxc1QhhvvG0JUlZG5ceTLUFGwV8EfOft7BNsERLz5HdwylpwcX5d36XmtaO8UD2UyHxvw/exec';
+
+async function sendToGoogleSheets(lead) {
+  if (!SHEETS_SCRIPT_URL || SHEETS_SCRIPT_URL === 'COLE_AQUI_A_URL_DO_SEU_APPS_SCRIPT') {
+    console.warn('Google Sheets: URL não configurada.');
+    return false;
+  }
+  try {
+    await fetch(SHEETS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(lead)
+    });
+    return true;
+  } catch(e) {
+    console.error('sendToGoogleSheets:', e);
+    return false;
+  }
+}
+
+window.submitForm = function() {
+  var name    = document.getElementById('form-name').value.trim();
+  var email   = document.getElementById('form-email').value.trim();
+  var phone   = document.getElementById('form-phone').value.trim();
+  var service = document.getElementById('form-service').value;
+  var msg     = (document.getElementById('form-msg') ? document.getElementById('form-msg').value.trim() : '');
+
+  if (!name)  { alert('Por favor, informe seu nome.');   return; }
+  if (!email) { alert('Por favor, informe seu e-mail.'); return; }
+
+  var lead = {
+    id:       Date.now(),
+    novo:     true,
+    nome:     name,
+    email:    email,
+    telefone: phone,
+    servico:  service,
+    mensagem: msg,
+    data:     new Date().toLocaleString('pt-BR')
+  };
+
+  // 1. Salva no localStorage (painel admin local)
+  var submissions = JSON.parse(localStorage.getItem('pen_submissions') || '[]');
+  submissions.unshift(lead);
+  localStorage.setItem('pen_submissions', JSON.stringify(submissions));
+  updateMsgBadge();
+
+  // 2. Envia para Google Sheets (funciona para qualquer visitante)
+  sendToGoogleSheets(lead);
+
+  // 3. Limpa o formulário
+  ['form-name','form-phone','form-email'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('form-service').value = '';
+  if (document.getElementById('form-msg')) document.getElementById('form-msg').value = '';
+
+  // 4. Mostra tela de Obrigado
+  showObrigado({ email: email, phone: phone, servico: service });
+};
+
+
 // ============================================================
 window.submitForm = function() {
   var name    = document.getElementById('form-name').value.trim();
