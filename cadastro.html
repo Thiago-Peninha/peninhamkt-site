@@ -586,8 +586,7 @@ var GH_LEADS  = 'leads.json';
 var GH_CONTENT = 'content.json';
 
 function getGhToken() {
-  // Token embutido diretamente — não depende de localStorage
-  return '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';
+  try { return localStorage.getItem('pen_gh_token') || ''; } catch { return ''; }
 }
 
 // ════════════════════════════════════════════════════════════
@@ -617,6 +616,34 @@ async function loadSiteContent() {
 // ════════════════════════════════════════════════════════════
 //  SALVA LEAD — localStorage imediato + GitHub acumulando
 // ════════════════════════════════════════════════════════════
+
+// ════════════════════════════════════════════════════════════
+//  GOOGLE SHEETS — envia lead direto para sua planilha
+//  Substitua SCRIPT_URL pela URL do seu Apps Script
+// ════════════════════════════════════════════════════════════
+var SHEETS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxc1QhhvvG0JUlZG5ceTLUFGwV8EfOft7BNsERLz5HdwylpwcX5d36XmtaO8UD2UyHxvw/exec';
+
+async function sendToGoogleSheets(lead) {
+  if (!SHEETS_SCRIPT_URL || SHEETS_SCRIPT_URL === 'COLE_AQUI_A_URL_DO_SEU_APPS_SCRIPT') {
+    console.warn('Google Sheets: URL do Apps Script não configurada.');
+    return false;
+  }
+  try {
+    // Apps Script aceita POST com dados em JSON
+    var res = await fetch(SHEETS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors', // necessário para evitar erro de CORS com Apps Script
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(lead)
+    });
+    // no-cors retorna opaque — considera sucesso se não lançou exceção
+    return true;
+  } catch(e) {
+    console.error('sendToGoogleSheets:', e);
+    return false;
+  }
+}
+
 async function saveLeadToGitHub(lead) {
   // 1. Salva local SEMPRE (nunca perde o lead)
   var local = [];
@@ -714,12 +741,15 @@ window.submitForm = function() {
     data:     new Date().toLocaleString('pt-BR')
   };
 
-  // Salva local + GitHub em segundo plano
+  // 1. Salva local + GitHub em segundo plano
   saveLeadToGitHub(lead).then(function(ok) {
-    if (!ok) console.warn('Lead salvo só localmente — GitHub indisponível ou sem token.');
-  }).catch(function(e) {
-    console.error('saveLeadToGitHub:', e);
-  });
+    if (!ok) console.warn('Lead salvo localmente — GitHub sem token.');
+  }).catch(function(e) { console.error('saveLeadToGitHub:', e); });
+
+  // 2. Envia para Google Sheets (principal — funciona sem token, para qualquer visitante)
+  sendToGoogleSheets(lead).then(function(ok) {
+    if (!ok) console.warn('Sheets: falha no envio.');
+  }).catch(function(e) { console.error('sendToGoogleSheets:', e); });
 
   // Limpa o formulário
   ['form-name','form-phone','form-email','form-company','form-sector'].forEach(function(id) {
